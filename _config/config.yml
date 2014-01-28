@@ -1,0 +1,10 @@
+Group:
+  extensions:
+    - Ext_Users_Group
+Member:
+  extensions:
+    - Ext_Users_Member
+Controller:
+  extensions:
+    - Ext_Users_Controller
+

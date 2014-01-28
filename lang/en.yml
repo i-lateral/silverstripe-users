@@ -1,0 +1,18 @@
+en:
+  Users:
+    # Common Items
+    HELLO: 'Hi'
+    BACK: 'Back'
+    CANCEL: 'Cancel'
+    LOGIN: 'Log in'
+    LOGOUT: 'Log out'
+    # Sign in and Register
+    EMAIL: 'Email'
+    SIGNIN: 'Sign in'
+    REGISTER: 'Register'
+    MYACCOUNT: 'My account'
+    PROFILESUMMARY: 'Profile summary'
+    EDITDETAILS: 'Edit account details'
+    PHONENUMBER: 'Phone number'
+    DETAILSUPDATED: 'Account details updated'
+    CANNOTEDIT: "You cannot edit this account"

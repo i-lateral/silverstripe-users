@@ -1,0 +1,18 @@
+de:
+  Users:
+    # Common Items
+    HELLO: 'Hallo'
+    BACK: 'Zurück'
+    CANCEL: 'Abbrechen'
+    LOGIN: 'Anmelden'
+    LOGOUT: 'Abmelden'
+    # Sign in and Register
+    EMAIL: 'Email'
+    SIGNIN: 'Anmelden'
+    REGISTER: 'Registrieren'
+    MYACCOUNT: 'Ihr Konto'
+    PROFILESUMMARY: 'Profil Zusammenfassung'
+    EDITDETAILS: 'Kontodetails bearbeiten'
+    PHONENUMBER: 'Telefonnummer'
+    DETAILSUPDATED: 'Kontodaten aktualisiert'
+    CANNOTEDIT: 'Sie können dieses Konto nicht bearbeiten'
