@@ -93,17 +93,19 @@ class Users_RegisterForm extends Form {
         $this->extend("updateMemberFilter", $filter);
 
         // Check if a user already exists
-        if($member = Member::get()->filter($filter)->first() && $member) {
-            $form->addErrorMessage(
-                "Blurb",
-                "Sorry, an account already exists with those details.",
-                "bad"
-            );
+        if($member = Member::get()->filter($filter)->first()) {
+            if($member) {
+                $this->addErrorMessage(
+                    "Blurb",
+                    "Sorry, an account already exists with those details.",
+                    "bad"
+                );
 
-            // Load errors into session and post back
-            Session::set("FormInfo.Form_Form.data", $data);
+                // Load errors into session and post back
+                Session::set("FormInfo.Form_Form.data", $data);
 
-            return $controller->redirectBack();
+                return $controller->redirectBack();
+            }
         }
 
 
