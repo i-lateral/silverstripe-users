@@ -32,6 +32,10 @@ class Users_RegisterForm extends Form {
      */
     public function __construct($controller, $name) {
 
+        // If back URL set, push to session
+        if(isset($_REQUEST['BackURL']))
+            Session::set('BackURL',$_REQUEST['BackURL']);
+
         // Setup form fields
         $fields = new FieldList();
 
@@ -129,7 +133,6 @@ class Users_RegisterForm extends Form {
         // If a back URL is used in session.
         if(Session::get("BackURL")) {
             $redirect_url = Session::get("BackURL");
-            Session::clear("BackURL");
         } else {
             $redirect_url = Controller::join_links(
                 BASE_URL,
