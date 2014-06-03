@@ -4,5 +4,5 @@ After: framework/routes#rootroutes
 ---
 Director:
   rules:
-    'users/register//$Action/$ID': 'Users_Register_Controller'
+    'users/register//$Action/$ID/$OtherID': 'Users_Register_Controller'
     'users/account//$Action/$ID': 'Users_Account_Controller'

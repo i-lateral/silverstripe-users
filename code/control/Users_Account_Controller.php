@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Controller that is used to allow users to manage their accounts and register
+ * Controller that is used to allow users to manage their accounts via
+ * the front end of the site.
  *
  */
 class Users_Account_Controller extends Controller implements PermissionProvider {
@@ -28,7 +29,7 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
         // Check we are logged in as a user who can access front end management
         if(!Permission::check("USERS_MANAGE_ACCOUNT")) Security::permissionFailure();
 
-        // Set our memeber object
+        // Set our member object
         $this->member = Member::currentUser();
     }
 
@@ -179,6 +180,12 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
             "USERS_MANAGE_ACCOUNT" => array(
                 'name' => 'Manage user account',
                 'help' => 'Allow user to manage their account details',
+                'category' => 'Frontend Users',
+                'sort' => 100
+            ),
+            "USERS_VERIFIED" => array(
+                'name' => 'Verified user',
+                'help' => 'Users have verified their account',
                 'category' => 'Frontend Users',
                 'sort' => 100
             ),
