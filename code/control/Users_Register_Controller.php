@@ -108,7 +108,7 @@ class Users_Register_Controller extends Controller {
         else
             $member = Member::get()->byID($this->request->param("ID"));
 
-        if($member && Users::config()->send_verification_email)
+        if($member && !$member->isVerified() && Users::config()->send_verification_email)
             $sent = $this->send_verification_email($member);
         else
             $sent = false;
