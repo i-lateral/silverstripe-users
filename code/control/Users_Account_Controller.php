@@ -23,6 +23,19 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
         "ChangePasswordForm",
     );
 
+    /**
+     * Determine if current user requires verification (based on their
+     * account and Users verification setting).
+     *
+     * @return Boolean
+     */
+    public function RequireVerification() {
+        if(!$this->member->isVerified() && Users::config()->require_verification)
+            return true;
+        else
+            return false;
+    }
+
     public function init() {
         parent::init();
 
@@ -36,7 +49,7 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
     public function Link($action = null) {
         return Controller::join_links(
             BASE_URL,
-            $this->config()->get('url_segment'),
+            $this->config()->url_segment,
             $action
         );
     }

@@ -33,45 +33,6 @@ class Users_Register_Controller extends Controller {
     );
 
     /**
-     * Stipulate whether to send a verification email to users after
-     * registration
-     *
-     * @var Boolean
-     * @config
-     */
-    private static $send_verification_email = true;
-
-    /**
-     * Auto login users after registration
-     *
-     * @var Boolean
-     * @config
-     */
-    private static $login_after_register = true;
-
-    /**
-     * Add new users to the following groups. This is a list of group codes.
-     * Adding a new code will add the user to this group
-     *
-     * @var array
-     * @config
-     */
-    private static $new_user_groups = array(
-        "users-frontend"
-    );
-
-    /**
-     * Groups a user will be added to when verified. This should be an
-     * array of group "codes", NOT names or ID's
-     *
-     * @var Array
-     * @config
-     */
-    private static $verification_groups = array(
-        "users-verified"
-    );
-
-    /**
      * Internal function designed to allow us to send a verification
      * email from multiple locations
      *
@@ -81,7 +42,11 @@ class Users_Register_Controller extends Controller {
     protected function send_verification_email(Member $member) {
         if($member) {
             $subject = _t("Users.PleaseVerify", "Please verify your account");
-            $from = Email::config()->admin_email;
+            if(Users::config()->send_email_from)
+                $from = Users::config()->send_email_from;
+            else
+                $from = Email::config()->admin_email;
+
             $body = $this->renderWith(
                 'UsersAccountVerification',
                 array(
@@ -107,7 +72,7 @@ class Users_Register_Controller extends Controller {
     public function Link($action = null) {
         return Controller::join_links(
             BASE_URL,
-            $this->config()->get('url_segment'),
+            $this->config()->url_segment,
             $action
         );
     }
@@ -136,8 +101,14 @@ class Users_Register_Controller extends Controller {
      *
      */
     public function sendverification() {
-        $member = Member::get()->byID($this->request->param("ID"));
-        if($this->config()->send_verification_email)
+        $sent = false;
+
+        if(Member::currentUserID())
+            $member = Member::currentUser();
+        else
+            $member = Member::get()->byID($this->request->param("ID"));
+
+        if($member && Users::config()->send_verification_email)
             $sent = $this->send_verification_email($member);
         else
             $sent = false;
@@ -148,7 +119,7 @@ class Users_Register_Controller extends Controller {
         ));
 
         return $this->renderWith(array(
-            "Users_Verify",
+            "Users_Register_sendverification",
             "Users",
             "Page"
         ));
@@ -169,7 +140,7 @@ class Users_Register_Controller extends Controller {
         // Add a verified users group (only used if we turn on
         // verification)
         $verify_groups = Group::get()
-            ->filter("Code",$this->config()->verification_groups);
+            ->filter("Code",Users::config()->verification_groups);
 
         $this->extend("onBeforeVerify", $member);
 
@@ -188,7 +159,7 @@ class Users_Register_Controller extends Controller {
         $this->extend("onAfterVerify", $member);
 
         return $this->renderWith(array(
-            "Users_Verify",
+            "Users_Register_verify",
             "Users",
             "Page"
         ));
@@ -291,9 +262,9 @@ class Users_Register_Controller extends Controller {
         $this->extend("updateNewMember", $member, $data);
 
         // Add member to any groups that have been specified
-        if(count($this->config()->new_user_groups)) {
+        if(count(Users::config()->new_user_groups)) {
             $groups = Group::get()->filter(array(
-                "Code" => $this->config()->new_user_groups
+                "Code" => Users::config()->new_user_groups
             ));
 
             foreach($groups as $group) {
@@ -303,13 +274,13 @@ class Users_Register_Controller extends Controller {
         }
 
         // Send a verification email, if needed
-        if($this->config()->send_verification_email)
+        if(Users::config()->send_verification_email)
             $sent = $this->send_verification_email($member);
         else
             $sent = false;
 
         // Login (if enabled)
-        if($this->config()->login_after_register)
+        if(Users::config()->login_after_register)
             $member->LogIn(isset($data['Remember']));
 
         // If a back URL is used in session.

@@ -8,5 +8,13 @@
         <% else %>
             <p><% _t('Users.NotVerificationSent','Unable to send verification.') %></p>
         <% end_if %>
+
+        <% if $CurrentMember %>
+            <p>
+                <a class="btn" href="{$BaseHref}users/account">
+                    <% _t("Users.BackToAccount", "Back to your account") %>
+                </a>
+            </p>
+        <% end_if %>
     </div>
 </div>

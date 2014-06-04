@@ -7,7 +7,11 @@
  */
 class Ext_Users_Controller extends Extension {
 
-    // Render current user account nav
+    /**
+     * Render current user account nav
+     *
+     * @return string
+     */
     public function getUserAccountNav() {
         return $this->owner->renderWith("Users_AccountNav");
     }
