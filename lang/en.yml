@@ -1,18 +1,31 @@
 en:
+  CMSMain:
+    SAVE: Save
+  Member:
+    EMAIL: Email
+    FIRSTNAME: 'First Name'
+    SURNAME: Surname
+  Security:
+    CHANGEPASSWORDHEADER: 'Change your password'
   Users:
-    # Common Items
-    HELLO: 'Hi'
-    BACK: 'Back'
-    CANCEL: 'Cancel'
-    LOGIN: 'Log in'
-    LOGOUT: 'Log out'
-    # Sign in and Register
-    EMAIL: 'Email'
-    SIGNIN: 'Sign in'
-    REGISTER: 'Register'
-    MYACCOUNT: 'My account'
-    PROFILESUMMARY: 'Profile summary'
-    EDITDETAILS: 'Edit account details'
-    PHONENUMBER: 'Phone number'
+    AccountVerification: 'Account Verification'
+    BackToAccount: 'Back to your account'
+    CANCEL: Cancel
+    CANNOTEDIT: 'You cannot edit this account'
+    CHANGEPASSWORD: 'Change password'
     DETAILSUPDATED: 'Account details updated'
-    CANNOTEDIT: "You cannot edit this account"
+    EDITDETAILS: 'Edit account details'
+    HELLO: Hi
+    LOGIN: 'Log in'
+    LOGOUT: Logout
+    MYACCOUNT: 'My account'
+    NextSteps: 'You will recieve an email with a verification link. Clicking the link will verify your account.'
+    NotVerificationSent: 'Unable to send verification.'
+    NotVerified: 'You have not verified your email address'
+    NotVerifiedMessage: 'Your account could not be verified.'
+    PROFILESUMMARY: 'Profile Summary'
+    PleaseVerify: 'Please verify your account using the link below:'
+    REGISTER: Register
+    Send: 'Send now'
+    VerificationSent: 'A verification has been sent to your registered email address.'
+    VerifiedMessage: 'Your account has been now been verified.'

@@ -1,4 +1,4 @@
-<div class="unit-25">
+<aside class="users-sidebar unit-25 unit size1of4">
     <nav class="nav-v secondary">
         <ul>
             <% loop $AccountMenu %>
@@ -11,4 +11,4 @@
             <% end_loop %>
         </ul>
     </nav>
-</div>
+</aside>
