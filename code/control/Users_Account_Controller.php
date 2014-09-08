@@ -62,16 +62,14 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
         $member = Member::currentUser();
 
         $this->customise(array(
-            "ClassName" => "AccountPage",
-            "Title" => _t('Users.PROFILESUMMARY','Profile Summary'),
-            "Content" => $this->renderWith("Users_Profile_Summary"),
+            "ClassName" => "AccountPage"
         ));
 
         $this->extend("onBeforeIndex");
 
         return $this->renderWith(array(
-            "Users_Account",
-            "Users",
+            "UserAccount",
+            "UserAccount",
             "Page"
         ));
     }
@@ -81,15 +79,14 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
 
         $this->customise(array(
             "ClassName" => "AccountPage",
-            "Title" => _t('Users.EDITDETAILS','Edit account details'),
             "Form"  => $this->EditAccountForm()->loadDataFrom($member)
         ));
 
         $this->extend("onBeforeEdit");
 
         return $this->renderWith(array(
-            "Users_Account",
-            "Users",
+            "UserAccount_edit",
+            "UserAccount",
             "Page"
         ));
     }
@@ -100,15 +97,14 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
 
         $this->customise(array(
             "ClassName" => "AccountPage",
-            "Title" => _t('Security.CHANGEPASSWORDHEADER','Change your password'),
             "Form"  => $this->ChangePasswordForm()
         ));
 
         $this->extend("onBeforeChangePassword");
 
         return $this->renderWith(array(
-            "Users_Account",
-            "Users",
+            "UserAccount_changepassword",
+            "UserAccount",
             "Page"
         ));
     }
