@@ -52,17 +52,17 @@ class Users_EditAccountForm extends Form {
             // Save member
             $this->saveInto($member);
             $member->write();
-            $this->controller->setFlashMessage(
-                "success",
-                _t("Users.DETAILSUPDATED","Account details updated")
+            
+            $this->sessionMessage(
+                _t("Users.DETAILSUPDATED","Account details updated"),
+                "success"
             );
-
-            return $this->controller->redirect($this->controller->Link());
-        } else
-            $this->controller->setFlashMessage(
-                "error",
-                _t("Users.CANNOTEDIT","You cannot edit this account")
+        } else {
+            $this->sessionMessage(
+                _t("Users.CANNOTEDIT","You cannot edit this account"),
+                "warning"
             );
+        }
 
         return $this->controller->redirectBack();
     }
