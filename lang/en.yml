@@ -6,7 +6,7 @@ en:
     FIRSTNAME: 'First Name'
     SURNAME: Surname
   Security:
-    CHANGEPASSWORDHEADER: 'Change your password'
+    ChangeYourPassword: 'Change your password'
   Users:
     AccountVerification: 'Account Verification'
     BackToAccount: 'Back to your account'
@@ -15,6 +15,7 @@ en:
     CHANGEPASSWORD: 'Change password'
     DETAILSUPDATED: 'Account details updated'
     EDITDETAILS: 'Edit account details'
+    EditAccountDetails: 'Edit account details'
     HELLO: Hi
     LOGIN: 'Log in'
     LOGOUT: Logout
@@ -25,6 +26,7 @@ en:
     NotVerifiedMessage: 'Your account could not be verified.'
     PROFILESUMMARY: 'Profile Summary'
     PleaseVerify: 'Please verify your account using the link below:'
+    ProfileSummary: 'Profile Summary'
     REGISTER: Register
     Send: 'Send now'
     VerificationSent: 'A verification has been sent to your registered email address.'
