@@ -1,4 +1,4 @@
-<div class="users-accountnav nav-h">
+<nav class="users-accountnav navbar">
     <ul>
         <% if $CurrentMember %>
             <li class="details">
@@ -27,4 +27,4 @@
             </li>
         <% end_if %>
     </ul>
-</div>
+</nav>

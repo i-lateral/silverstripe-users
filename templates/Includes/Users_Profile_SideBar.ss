@@ -1,5 +1,5 @@
 <aside class="users-sidebar unit-25 unit size1of4">
-    <nav class="nav-v secondary">
+    <nav class="nav secondary">
         <ul>
             <% loop $AccountMenu %>
                 <li>
