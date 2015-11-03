@@ -20,7 +20,7 @@ en:
     LOGIN: 'Log in'
     LOGOUT: Logout
     MYACCOUNT: 'My account'
-    NextSteps: 'You will recieve an email with a verification link. Clicking the link will verify your account.'
+    NextSteps: 'You will receive an email with a verification link. Clicking the link will verify your account.'
     NotVerificationSent: 'Unable to send verification.'
     NotVerified: 'You have not verified your email address'
     NotVerifiedMessage: 'Your account could not be verified.'
