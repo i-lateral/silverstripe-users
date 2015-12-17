@@ -160,23 +160,28 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
      */
     public function getAccountMenu() {
         $menu = new ArrayList();
+        
+        $curr_action = $this->request->param("Action");
 
         $menu->add(new ArrayData(array(
             "ID"    => 0,
             "Title" => _t('Users.PROFILESUMMARY',"Profile Summary"),
-            "Link"  => $this->Link()
+            "Link"  => $this->Link(),
+            "LinkingMode" => (!$curr_action) ? "current" : "link"
         )));
 
         $menu->add(new ArrayData(array(
             "ID"    => 10,
             "Title" => _t('Users.EDITDETAILS',"Edit account details"),
-            "Link"  => $this->Link("edit")
+            "Link"  => $this->Link("edit"),
+            "LinkingMode" => ($curr_action == "edit") ? "current" : "link"
         )));
 
         $menu->add(new ArrayData(array(
             "ID"    => 30,
             "Title" => _t('Users.CHANGEPASSWORD',"Change password"),
-            "Link"  => $this->Link("changepassword")
+            "Link"  => $this->Link("changepassword"),
+            "LinkingMode" => ($curr_action == "changepassword") ? "current" : "link"
         )));
 
         $this->extend("updateAccountMenu", $menu);

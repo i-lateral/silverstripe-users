@@ -3,7 +3,7 @@
         <ul>
             <% loop $AccountMenu %>
                 <li>
-                    <a href="$Link">
+                    <a href="$Link" class="$LinkingMode">
                         <span class="arrow">&rarr;</span>
                         <span class="text">$Title</span>
                     </a>
