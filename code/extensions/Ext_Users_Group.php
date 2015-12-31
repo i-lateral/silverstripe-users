@@ -3,14 +3,16 @@
 /**
  * Overwrite group object so we can setup some more default groups
  */
-class Ext_Users_Group extends DataExtension {
-    public function requireDefaultRecords() {
+class Ext_Users_Group extends DataExtension
+{
+    public function requireDefaultRecords()
+    {
         parent::requireDefaultRecords();
 
         // Add default author group if no other group exists
-        $frontend_group = Group::get()->filter("Code","users-frontend");
+        $frontend_group = Group::get()->filter("Code", "users-frontend");
 
-        if(!$frontend_group->exists()) {
+        if (!$frontend_group->exists()) {
             $frontend_group = new Group();
             $frontend_group->Code = 'users-frontend';
             $frontend_group->Title = "Frontend Users";
@@ -23,9 +25,9 @@ class Ext_Users_Group extends DataExtension {
 
         // Add a verified users group (only used if we turn on
         // verification)
-        $verify_group = Group::get()->filter("Code","users-verified");
+        $verify_group = Group::get()->filter("Code", "users-verified");
 
-        if(!$verify_group->exists()) {
+        if (!$verify_group->exists()) {
             $verify_group = new Group();
             $verify_group->Code = 'users-verified';
             $verify_group->Title = "Verified Users";
@@ -37,4 +39,3 @@ class Ext_Users_Group extends DataExtension {
         }
     }
 }
-

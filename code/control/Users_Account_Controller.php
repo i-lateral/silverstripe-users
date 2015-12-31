@@ -5,7 +5,8 @@
  * the front end of the site.
  *
  */
-class Users_Account_Controller extends Controller implements PermissionProvider {
+class Users_Account_Controller extends Controller implements PermissionProvider
+{
 
     protected $member;
 
@@ -29,24 +30,30 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
      *
      * @return Boolean
      */
-    public function RequireVerification() {
-        if(!$this->member->isVerified() && Users::config()->require_verification)
+    public function RequireVerification()
+    {
+        if (!$this->member->isVerified() && Users::config()->require_verification) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
-    public function init() {
+    public function init()
+    {
         parent::init();
 
         // Check we are logged in as a user who can access front end management
-        if(!Permission::check("USERS_MANAGE_ACCOUNT")) Security::permissionFailure();
+        if (!Permission::check("USERS_MANAGE_ACCOUNT")) {
+            Security::permissionFailure();
+        }
 
         // Set our member object
         $this->member = Member::currentUser();
     }
 
-    public function Link($action = null) {
+    public function Link($action = null)
+    {
         return Controller::join_links(
             BASE_URL,
             $this->config()->url_segment,
@@ -58,7 +65,8 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
      * Display the currently outstanding orders for the current user
      *
      */
-    public function index() {
+    public function index()
+    {
         $member = Member::currentUser();
 
         $this->customise(array(
@@ -74,7 +82,8 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
         ));
     }
 
-    public function edit() {
+    public function edit()
+    {
         $member = Member::currentUser();
 
         $this->customise(array(
@@ -91,9 +100,10 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
         ));
     }
 
-    public function changepassword() {
+    public function changepassword()
+    {
         // Set the back URL for this form
-        Session::set("BackURL",$this->Link("changepassword"));
+        Session::set("BackURL", $this->Link("changepassword"));
 
         $this->customise(array(
             "ClassName" => "AccountPage",
@@ -115,7 +125,8 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
      *
      * @return Form
      */
-    public function EditAccountForm() {
+    public function EditAccountForm()
+    {
         $form = Users_EditAccountForm::create($this, "EditAccountForm");
 
         $this->extend("updateEditAccountForm", $form);
@@ -129,12 +140,13 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
      *
      * @return Form
      */
-    public function ChangePasswordForm() {
-        $form = ChangePasswordForm::create($this,"ChangePasswordForm");
+    public function ChangePasswordForm()
+    {
+        $form = ChangePasswordForm::create($this, "ChangePasswordForm");
 
         $form
             ->Actions()
-            ->find("name","action_doChangePassword")
+            ->find("name", "action_doChangePassword")
             ->addExtraClass("btn")
             ->addExtraClass("btn-green");
 
@@ -145,7 +157,7 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
 
         $form
             ->Actions()
-            ->insertBefore($cancel_btn,"action_doChangePassword");
+            ->insertBefore($cancel_btn, "action_doChangePassword");
 
         $this->extend("updateChangePasswordForm", $form);
 
@@ -158,38 +170,40 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
      *
      * @return ArrayList
      */
-    public function getAccountMenu() {
+    public function getAccountMenu()
+    {
         $menu = new ArrayList();
         
         $curr_action = $this->request->param("Action");
 
         $menu->add(new ArrayData(array(
             "ID"    => 0,
-            "Title" => _t('Users.PROFILESUMMARY',"Profile Summary"),
+            "Title" => _t('Users.PROFILESUMMARY', "Profile Summary"),
             "Link"  => $this->Link(),
             "LinkingMode" => (!$curr_action) ? "current" : "link"
         )));
 
         $menu->add(new ArrayData(array(
             "ID"    => 10,
-            "Title" => _t('Users.EDITDETAILS',"Edit account details"),
+            "Title" => _t('Users.EDITDETAILS', "Edit account details"),
             "Link"  => $this->Link("edit"),
             "LinkingMode" => ($curr_action == "edit") ? "current" : "link"
         )));
 
         $menu->add(new ArrayData(array(
             "ID"    => 30,
-            "Title" => _t('Users.CHANGEPASSWORD',"Change password"),
+            "Title" => _t('Users.CHANGEPASSWORD', "Change password"),
             "Link"  => $this->Link("changepassword"),
             "LinkingMode" => ($curr_action == "changepassword") ? "current" : "link"
         )));
 
         $this->extend("updateAccountMenu", $menu);
 
-        return $menu->sort("ID","ASC");
+        return $menu->sort("ID", "ASC");
     }
 
-    public function providePermissions() {
+    public function providePermissions()
+    {
         return array(
             "USERS_MANAGE_ACCOUNT" => array(
                 'name' => 'Manage user account',
@@ -205,6 +219,4 @@ class Users_Account_Controller extends Controller implements PermissionProvider 
             ),
         );
     }
-
-
 }

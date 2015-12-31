@@ -8,7 +8,8 @@
  * @author i-lateral (http://www.i-lateral.com)
  * @package users
  */
-class Users extends Object {
+class Users extends Object
+{
 
     /**
      * Stipulate if a user requires verification. NOTE this does not
@@ -63,7 +64,8 @@ class Users extends Object {
      *
      * @param string Group code that will be used
      */
-    public static function addNewUserGroup($code) {
+    public static function addNewUserGroup($code)
+    {
         self::$new_user_groups[] = $code;
     }
 
@@ -73,9 +75,11 @@ class Users extends Object {
      *
      * @param string Group code that will be used
      */
-    public static function removeNewUserGroup($code) {
-        if(isset(self::$new_user_groups[$code]))
+    public static function removeNewUserGroup($code)
+    {
+        if (isset(self::$new_user_groups[$code])) {
             unset(self::$new_user_groups[$code]);
+        }
     }
 
     /**
@@ -95,7 +99,8 @@ class Users extends Object {
      *
      * @param string Group code that will be used
      */
-    public static function addVerificationGroup($code) {
+    public static function addVerificationGroup($code)
+    {
         self::$verification_groups[] = $code;
     }
 
@@ -105,9 +110,10 @@ class Users extends Object {
      *
      * @param string Group code that will be used
      */
-    public static function removeVerificationGroup($code) {
-        if(isset(self::$verification_groups[$code]))
+    public static function removeVerificationGroup($code)
+    {
+        if (isset(self::$verification_groups[$code])) {
             unset(self::$verification_groups[$code]);
+        }
     }
-
 }
