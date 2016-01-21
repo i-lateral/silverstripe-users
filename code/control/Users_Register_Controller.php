@@ -11,7 +11,8 @@
  * $verification_groups config variable
  *
  */
-class Users_Register_Controller extends Controller {
+class Users_Register_Controller extends Controller
+{
 
     /**
      * URL That you can access this from
@@ -39,13 +40,15 @@ class Users_Register_Controller extends Controller {
      * @param $member Member object to send email to
      * @return boolean
      */
-    protected function send_verification_email(Member $member) {
-        if($member) {
+    protected function send_verification_email(Member $member)
+    {
+        if ($member) {
             $subject = _t("Users.PleaseVerify", "Please verify your account");
-            if(Users::config()->send_email_from)
+            if (Users::config()->send_email_from) {
                 $from = Users::config()->send_email_from;
-            else
+            } else {
                 $from = Email::config()->admin_email;
+            }
 
             $body = $this->renderWith(
                 'UsersAccountVerification',
@@ -69,7 +72,8 @@ class Users_Register_Controller extends Controller {
         return false;
     }
 
-    public function Link($action = null) {
+    public function Link($action = null)
+    {
         return Controller::join_links(
             BASE_URL,
             $this->config()->url_segment,
@@ -77,7 +81,8 @@ class Users_Register_Controller extends Controller {
         );
     }
 
-    public function index(SS_HTTPRequest $request) {
+    public function index(SS_HTTPRequest $request)
+    {
         $this->customise(array(
             'Title'     => "Register",
             'ClassName' => 'RegisterPage',
@@ -100,18 +105,21 @@ class Users_Register_Controller extends Controller {
      * emails are enabled and account is not already verified)
      *
      */
-    public function sendverification() {
+    public function sendverification()
+    {
         $sent = false;
 
-        if(Member::currentUserID())
+        if (Member::currentUserID()) {
             $member = Member::currentUser();
-        else
+        } else {
             $member = Member::get()->byID($this->request->param("ID"));
+        }
 
-        if($member && !$member->isVerified() && Users::config()->send_verification_email)
+        if ($member && !$member->isVerified() && Users::config()->send_verification_email) {
             $sent = $this->send_verification_email($member);
-        else
+        } else {
             $sent = false;
+        }
 
         $this->customise(array(
             "ClassName" => "RegisterPage",
@@ -131,7 +139,8 @@ class Users_Register_Controller extends Controller {
      * ID) provided
      *
      */
-    public function verify() {
+    public function verify()
+    {
         $member = Member::get()->byID($this->request->param("ID"));
         $code = $this->request->param("OtherID");
         $verify = false;
@@ -140,12 +149,12 @@ class Users_Register_Controller extends Controller {
         // Add a verified users group (only used if we turn on
         // verification)
         $verify_groups = Group::get()
-            ->filter("Code",Users::config()->verification_groups);
+            ->filter("Code", Users::config()->verification_groups);
 
         $this->extend("onBeforeVerify", $member);
 
-        if(($member && $code) && $code == $member->VerificationCode) {
-            foreach($verify_groups as $group) {
+        if (($member && $code) && $code == $member->VerificationCode) {
+            foreach ($verify_groups as $group) {
                 $group->Members()->add($member);
                 $verify = true;
             }
@@ -170,11 +179,13 @@ class Users_Register_Controller extends Controller {
      *
      * @return Form
      */
-    public function RegisterForm() {
+    public function RegisterForm()
+    {
 
         // If back URL set, push to session
-        if(isset($_REQUEST['BackURL']))
-            Session::set('BackURL',$_REQUEST['BackURL']);
+        if (isset($_REQUEST['BackURL'])) {
+            Session::set('BackURL', $_REQUEST['BackURL']);
+        }
 
         // Setup form fields
         $fields = FieldList::create(
@@ -186,7 +197,7 @@ class Users_Register_Controller extends Controller {
 
         // Setup form actions
         $actions = new FieldList(
-            FormAction::create("doRegister","Register")
+            FormAction::create("doRegister", "Register")
                 ->addExtraClass("btn")
                 ->addExtraClass("btn-green")
         );
@@ -207,7 +218,7 @@ class Users_Register_Controller extends Controller {
 
         $session_data = Session::get("Form.{$form->FormName()}.data");
 
-        if($session_data && is_array($session_data)) {
+        if ($session_data && is_array($session_data)) {
             $form->loadDataFrom($session_data);
             Session::clear("Form.{$form->FormName()}.data");
         }
@@ -228,16 +239,19 @@ class Users_Register_Controller extends Controller {
      * @param array $data User submitted data
      * @param Form $form Registration form
      */
-    function doRegister($data, $form) {
+    public function doRegister($data, $form)
+    {
         $filter = array();
 
-        if(isset($data['Email'])) $filter['Email'] = $data['Email'];
+        if (isset($data['Email'])) {
+            $filter['Email'] = $data['Email'];
+        }
 
         $this->extend("updateMemberFilter", $filter);
 
         // Check if a user already exists
-        if($member = Member::get()->filter($filter)->first()) {
-            if($member) {
+        if ($member = Member::get()->filter($filter)->first()) {
+            if ($member) {
                 $form->addErrorMessage(
                     "Blurb",
                     "Sorry, an account already exists with those details.",
@@ -262,29 +276,31 @@ class Users_Register_Controller extends Controller {
         $this->extend("updateNewMember", $member, $data);
 
         // Add member to any groups that have been specified
-        if(count(Users::config()->new_user_groups)) {
+        if (count(Users::config()->new_user_groups)) {
             $groups = Group::get()->filter(array(
                 "Code" => Users::config()->new_user_groups
             ));
 
-            foreach($groups as $group) {
+            foreach ($groups as $group) {
                 $group->Members()->add($member);
                 $group->write();
             }
         }
 
         // Send a verification email, if needed
-        if(Users::config()->send_verification_email)
+        if (Users::config()->send_verification_email) {
             $sent = $this->send_verification_email($member);
-        else
+        } else {
             $sent = false;
+        }
 
         // Login (if enabled)
-        if(Users::config()->login_after_register)
+        if (Users::config()->login_after_register) {
             $member->LogIn(isset($data['Remember']));
+        }
 
         // If a back URL is used in session.
-        if(Session::get("BackURL")) {
+        if (Session::get("BackURL")) {
             $redirect_url = Session::get("BackURL");
         } else {
             $redirect_url = Controller::join_links(
