@@ -1,7 +1,7 @@
-<div class="units-row users-account line">
+<div class="units-row row users-account line">
     <% include Users_Profile_SideBar %>
 
-    <div class="users-content-container typography unit-75 unit size3of4 lastUnit">
+    <div class="users-content-container typography col-xs-12 col-sm-8 unit-75 unit size3of4 lastUnit">
         <% if $RequireVerification %>
             <div class="message message-bad">
                 <p>

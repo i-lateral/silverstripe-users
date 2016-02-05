@@ -1,4 +1,4 @@
-<div class="units-row users-verify">
+<div class="units-row row users-verify">
     <div class="content-container typography">
         <h1><% _t('Users.AccountVerification','Account Verification') %></h1>
 
