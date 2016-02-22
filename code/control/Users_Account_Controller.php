@@ -103,11 +103,27 @@ class Users_Account_Controller extends Controller implements PermissionProvider
     public function changepassword()
     {
         // Set the back URL for this form
-        Session::set("BackURL", $this->Link("changepassword"));
+        $back_url = Controller::join_links(
+            $this->Link("changepassword"),
+            "?s=1"
+        );
+        
+        Session::set("BackURL", $back_url);
+        
+        $form = $this->ChangePasswordForm();
+        
+        // Is password changed, set a session message.
+        $password_set = $this->request->getVar("s");
+        if($password_set && $password_set == 1) {
+            $form->sessionMessage(
+                _t("Users.PasswordChangedSuccessfully","Password Changed Successfully"),
+                "good"
+            );
+        }
 
         $this->customise(array(
             "ClassName" => "AccountPage",
-            "Form"  => $this->ChangePasswordForm()
+            "Form"  => $form
         ));
 
         $this->extend("onBeforeChangePassword");
