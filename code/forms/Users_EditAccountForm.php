@@ -5,12 +5,21 @@ class Users_EditAccountForm extends Form
 
     public function __construct($controller, $name = "Users_EditAccountForm")
     {
-        $fields = new FieldList();
-
-        $fields->add(HiddenField::create("ID"));
-        $fields->add(TextField::create("FirstName", _t('Member.FIRSTNAME', "First Name")));
-        $fields->add(TextField::create("Surname", _t('Member.SURNAME', "Surname")));
-        $fields->add(EmailField::create("Email", _t("Member.EMAIL", "Email")));
+        $fields = new FieldList(
+            HiddenField::create("ID"),
+            TextField::create(
+                "FirstName",
+                _t('Member.FIRSTNAME', "First Name")
+            ),
+            TextField::create(
+                "Surname",
+                _t('Member.SURNAME', "Surname")
+            ),
+            EmailField::create(
+                "Email",
+                _t("Member.EMAIL", "Email")
+            )
+        );
 
         $this->extend("updateFormFields", $fields);
 
@@ -36,7 +45,15 @@ class Users_EditAccountForm extends Form
 
         $this->extend("updateRequiredFields", $required);
 
-        parent::__construct($controller, $name, $fields, $actions, $required);
+        parent::__construct(
+            $controller,
+            $name,
+            $fields,
+            $actions,
+            $required
+        );
+        
+        $this->extend("updateForm", $this);
     }
 
     /**
