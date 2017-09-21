@@ -1,7 +1,9 @@
-<div class="users-register-container typography">
-    <h1>$Title</h1>
+<div class="container">
+    <div class="users-register-container typography">
+        <h1>$Title</h1>
 
-    $Content
+        $Content
 
-    $Form
+        $Form
+    </div>
 </div>
