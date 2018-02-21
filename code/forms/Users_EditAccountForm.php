@@ -60,7 +60,6 @@ class Users_EditAccountForm extends Form
      * Register a new member
      *
      * @param array $data User submitted data
-     * @param Form $form The used form
      */
     public function doUpdate($data)
     {

@@ -72,12 +72,42 @@ class Users_Register_Controller extends Controller
         return false;
     }
 
+    /**
+     * Get the link to this controller
+     * 
+     * @param string $action
+     * @return string
+     */
     public function Link($action = null)
     {
         return Controller::join_links(
-            BASE_URL,
             $this->config()->url_segment,
             $action
+        );
+    }
+
+    /**
+     * Get an absolute link to this controller
+     *
+     * @param string $action
+     * @return string
+     */
+    public function AbsoluteLink($action = null)
+    {
+        return Director::absoluteURL($this->Link($action));
+    }
+
+    /**
+     * Get a relative (to the root url of the site) link to this
+     * controller
+     *
+     * @param string $action
+     * @return string
+     */
+    public function RelativeLink($action = null)
+    {
+        return Controller::join_links(
+            $this->Link($action)
         );
     }
 

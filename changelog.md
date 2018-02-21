@@ -17,3 +17,4 @@ Minor update to:
 * Add travis config
 * Add License
 * Add contributing file
+* Update docs and link functions

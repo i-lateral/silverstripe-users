@@ -8,8 +8,6 @@
 class Users_Account_Controller extends Controller implements PermissionProvider
 {
 
-    protected $member;
-
     /**
      * URL That you can access this from
      *
@@ -17,6 +15,12 @@ class Users_Account_Controller extends Controller implements PermissionProvider
      */
     private static $url_segment = "users/account";
 
+    /**
+     * Allowed sub-URL's on this controller
+     * 
+     * @var array
+     * @config
+     */
     private static $allowed_actions = array(
         "edit",
         "changepassword",
@@ -25,10 +29,39 @@ class Users_Account_Controller extends Controller implements PermissionProvider
     );
 
     /**
+     * User account associated with this controller
+     *
+     * @var Member
+     */
+    protected $member;
+
+    /**
+     * Getter for member
+     *
+     * @return Member
+     */
+    public function getMember()
+    {
+        return $this->member;
+    }
+
+    /**
+     * Setter for member
+     *
+     * @param Member $member
+     * @return self
+     */
+    public function setMember(Member $member)
+    {
+        $this->member = $member;
+        return $this;
+    }
+
+    /**
      * Determine if current user requires verification (based on their
      * account and Users verification setting).
      *
-     * @return Boolean
+     * @return boolean
      */
     public function RequireVerification()
     {
@@ -39,6 +72,11 @@ class Users_Account_Controller extends Controller implements PermissionProvider
         }
     }
 
+    /**
+     * Perorm setup when this controller is initialised
+     *
+     * @return void
+     */
     public function init()
     {
         parent::init();
@@ -52,12 +90,42 @@ class Users_Account_Controller extends Controller implements PermissionProvider
         $this->member = Member::currentUser();
     }
 
+    /**
+     * Get the link to this controller
+     * 
+     * @param string $action
+     * @return string
+     */
     public function Link($action = null)
     {
         return Controller::join_links(
-            BASE_URL,
             $this->config()->url_segment,
             $action
+        );
+    }
+
+    /**
+     * Get an absolute link to this controller
+     *
+     * @param string $action
+     * @return string
+     */
+    public function AbsoluteLink($action = null)
+    {
+        return Director::absoluteURL($this->Link($action));
+    }
+
+    /**
+     * Get a relative (to the root url of the site) link to this
+     * controller
+     *
+     * @param string $action
+     * @return string
+     */
+    public function RelativeLink($action = null)
+    {
+        return Controller::join_links(
+            $this->Link($action)
         );
     }
 
