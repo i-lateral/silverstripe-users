@@ -1,6 +1,8 @@
 Silverstripe Users
 ==================
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/i-lateral/silverstripe-users/badges/quality-score.png?b=1)](https://scrutinizer-ci.com/g/i-lateral/silverstripe-users/?branch=1)
+
 Basic user account management, signin and registration module designed
 to be used with pure silverstripe framework (no CMS)
 
