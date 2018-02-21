@@ -87,14 +87,18 @@ class Users_Account_Controller extends Controller implements PermissionProvider
         }
 
         // Set our member object
-        $this->member = Member::currentUser();
+        $member = Member::currentUser();
+
+        if ($member instanceof Member) {
+            $this->member = $member;
+        }
     }
 
     /**
      * Get the link to this controller
      * 
      * @param string $action
-     * @return string
+     * @return string|null
      */
     public function Link($action = null)
     {
@@ -108,7 +112,7 @@ class Users_Account_Controller extends Controller implements PermissionProvider
      * Get an absolute link to this controller
      *
      * @param string $action
-     * @return string
+     * @return string|null
      */
     public function AbsoluteLink($action = null)
     {
@@ -120,7 +124,7 @@ class Users_Account_Controller extends Controller implements PermissionProvider
      * controller
      *
      * @param string $action
-     * @return string
+     * @return string|null
      */
     public function RelativeLink($action = null)
     {
@@ -135,8 +139,6 @@ class Users_Account_Controller extends Controller implements PermissionProvider
      */
     public function index()
     {
-        $member = Member::currentUser();
-
         $this->customise(array(
             "ClassName" => "AccountPage"
         ));
@@ -153,10 +155,15 @@ class Users_Account_Controller extends Controller implements PermissionProvider
     public function edit()
     {
         $member = Member::currentUser();
+        $form = $this->EditAccountForm();
+
+        if ($member instanceof Member) {
+            $form->loadDataFrom($member);
+        }
 
         $this->customise(array(
             "ClassName" => "AccountPage",
-            "Form"  => $this->EditAccountForm()->loadDataFrom($member)
+            "Form"  => $form
         ));
 
         $this->extend("onBeforeEdit");

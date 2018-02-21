@@ -76,7 +76,7 @@ class Users_Register_Controller extends Controller
      * Get the link to this controller
      * 
      * @param string $action
-     * @return string
+     * @return string|null
      */
     public function Link($action = null)
     {
@@ -90,7 +90,7 @@ class Users_Register_Controller extends Controller
      * Get an absolute link to this controller
      *
      * @param string $action
-     * @return string
+     * @return string|null
      */
     public function AbsoluteLink($action = null)
     {
@@ -102,7 +102,7 @@ class Users_Register_Controller extends Controller
      * controller
      *
      * @param string $action
-     * @return string
+     * @return string|null
      */
     public function RelativeLink($action = null)
     {
