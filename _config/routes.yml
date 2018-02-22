@@ -2,7 +2,7 @@
 Name: userroutes
 After: framework/routes#rootroutes
 ---
-Director:
+SilverStripe\Control\Director:
   rules:
-    'users/register//$Action/$ID/$OtherID': 'Users_Register_Controller'
-    'users/account//$Action/$ID': 'Users_Account_Controller'
+    'users/register//$Action/$ID/$OtherID': 'ilateral\SilverStripe\Users\Control\RegisterController'
+    'users/account//$Action/$ID': 'ilateral\SilverStripe\Users\Control\AccountController'

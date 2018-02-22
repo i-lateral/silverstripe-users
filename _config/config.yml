@@ -1,10 +1,12 @@
-Group:
+---
+  Name: userconfig
+---
+SilverStripe\Security\Group:
   extensions:
-    - Ext_Users_Group
-Member:
+    - ilateral\SilverStripe\Users\Extensions\GroupExtension
+SilverStripe\Security\Member:
   extensions:
-    - Ext_Users_Member
-Controller:
+    - ilateral\SilverStripe\Users\Extensions\MemberExtension
+SilverStripe\Control\Controller:
   extensions:
-    - Ext_Users_Controller
-
+    - ilateral\SilverStripe\Users\Extensions\ControllerExtension
