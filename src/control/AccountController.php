@@ -9,7 +9,9 @@ use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\Permission;
+use SilverStripe\Security\MemberAuthenticator\MemberAuthenticator;
 use SilverStripe\Security\MemberAuthenticator\ChangePasswordForm;
+use SilverStripe\Security\MemberAuthenticator\ChangePasswordHandler;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ArrayData;
@@ -269,12 +271,13 @@ class AccountController extends Controller implements PermissionProvider
         // Set the back URL for this form
         $request = $this->getRequest();
         $session = $request->getSession();
-        $password_set = $request()->getVar("s");
+        $password_set = $request->getVar("s");
         $back_url = Controller::join_links(
             $this->Link("changepassword"),
             "?s=1"
         );
         $session->set("BackURL", $back_url);
+
         $form = $this->ChangePasswordForm();
 
         // Is password changed, set a session message.
@@ -319,13 +322,18 @@ class AccountController extends Controller implements PermissionProvider
      */
     public function ChangePasswordForm()
     {
-        $form = ChangePasswordForm::create($this, "ChangePasswordForm");
+        $handler = ChangePasswordHandler::create(
+            $this->Link(),
+            new MemberAuthenticator()
+        );
+        $handler->setRequest($this->getRequest());
+
+        $form = $handler->changePasswordForm();
 
         $form
             ->Actions()
             ->find("name", "action_doChangePassword")
-            ->addExtraClass("btn")
-            ->addExtraClass("btn-green");
+            ->addExtraClass("btn btn-green btn-primary");
 
         $cancel_btn = LiteralField::create(
             "CancelLink",
