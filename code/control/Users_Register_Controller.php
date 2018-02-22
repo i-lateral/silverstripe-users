@@ -76,7 +76,7 @@ class Users_Register_Controller extends Controller
      * Get the link to this controller
      * 
      * @param string $action
-     * @return string|null
+     * @return string
      */
     public function Link($action = null)
     {
@@ -90,7 +90,7 @@ class Users_Register_Controller extends Controller
      * Get an absolute link to this controller
      *
      * @param string $action
-     * @return string|null
+     * @return false|string
      */
     public function AbsoluteLink($action = null)
     {
@@ -102,7 +102,7 @@ class Users_Register_Controller extends Controller
      * controller
      *
      * @param string $action
-     * @return string|null
+     * @return string
      */
     public function RelativeLink($action = null)
     {
@@ -115,7 +115,7 @@ class Users_Register_Controller extends Controller
      * Default action this controller will deal with
      *
      * @param SS_HTTPRequest $request
-     * @return string
+     * @return HTMLText
      */
     public function index(SS_HTTPRequest $request)
     {
@@ -141,7 +141,7 @@ class Users_Register_Controller extends Controller
      * emails are enabled and account is not already verified)
      *
      * @param SS_HTTPRequest $request
-     * @return string
+     * @return HTMLText
      */
     public function sendverification(SS_HTTPRequest $request)
     {
@@ -150,7 +150,7 @@ class Users_Register_Controller extends Controller
         if (Member::currentUserID()) {
             $member = Member::currentUser();
         } else {
-            $member = Member::get()->byID($this->request->param("ID"));
+            $member = Member::get()->byID($this->getRequest()->param("ID"));
         }
 
         if ($member && !$member->isVerified() && Users::config()->send_verification_email) {
@@ -177,12 +177,12 @@ class Users_Register_Controller extends Controller
      * ID) provided
      *
      * @param SS_HTTPRequest $request
-     * @return string
+     * @return HTMLText
      */
     public function verify(SS_HTTPRequest $request)
     {
-        $member = Member::get()->byID($this->request->param("ID"));
-        $code = $this->request->param("OtherID");
+        $member = Member::get()->byID($this->getRequest()->param("ID"));
+        $code = $this->getRequest()->param("OtherID");
         $verify = false;
 
         // Check verification group exists, if not, make it
