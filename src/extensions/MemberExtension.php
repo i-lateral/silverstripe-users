@@ -93,7 +93,7 @@ class MemberExtension extends DataExtension
                 ->setFrom($from)
                 ->setTo($this->owner->Email)
                 ->setSubject($subject)
-                ->setTemplate('UsersAccountVerification')
+                ->setTemplate("ilateral\\SilverStripe\\Users\\Email\\AccountVerification")
                 ->populateTemplate(ArrayData::create([
                     "Link" => Controller::join_links(
                         $controller->AbsoluteLink("verify"),

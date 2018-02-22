@@ -1,6 +1,6 @@
 <div class="container">
     <div class="units-row row users-account line">
-        <% include Users_Profile_SideBar %>
+        <% include ilateral\SilverStripe\Users\Includes\SideBar %>
 
         <div class="users-content-container typography col-xs-12 col-sm-8 unit-75 unit size3of4 lastUnit">
             <% if $RequireVerification %>

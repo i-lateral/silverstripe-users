@@ -53,6 +53,33 @@ class RegisterController extends Controller
     ];
 
     /**
+     * Setup default templates for this controller
+     *
+     * @var array
+     */
+    protected $templates = [
+        'index' => [
+            'RegisterController',
+            self::class,
+            'Page'
+        ],
+        'sendverification' => [
+            'RegisterController_sendverification',
+            self::class . '_sendverification',
+            'RegisterController',
+            self::class,
+            'Page'
+        ],
+        'verify' => [
+            'RegisterController_verify',
+            self::class . '_verify',
+            'RegisterController',
+            self::class,
+            'Page'
+        ]
+    ];
+
+    /**
      * Internal function designed to allow us to send a verification
      * email from multiple locations
      *
@@ -140,11 +167,7 @@ class RegisterController extends Controller
 
         $this->extend("updateIndexAction");
 
-        return $this->renderWith([
-            "Users_Register",
-            "Users",
-            "Page"
-        ]);
+        return $this->render();
     }
 
 
@@ -172,7 +195,7 @@ class RegisterController extends Controller
             "Title" => _t('Users.AccountVerification','Account Verification'),
             "MetaTitle" => _t('Users.AccountVerification','Account Verification'),
             "Content" => $this->renderWith(
-                "UsersSendVerificationContent",
+                "ilateral\\SilverStripe\\Users\\Includes\\SendVerificationContent",
                 ["Sent" => $sent]
             ),
             "Sent" => $sent
@@ -180,11 +203,7 @@ class RegisterController extends Controller
 
         $this->extend("updateSendVerificationAction");
 
-        return $this->renderWith([
-            "Users_Register_sendverification",
-            "Users",
-            "Page"
-        ]);
+        return $this->render();
     }
 
     /**
@@ -219,7 +238,7 @@ class RegisterController extends Controller
             "Title" => _t('Users.AccountVerification','Account Verification'),
             "MetaTitle" => _t('Users.AccountVerification','Account Verification'),
             "Content" => $this->renderWith(
-                "UsersVerifyContent",
+                "ilateral\\SilverStripe\\Users\\Includes\\VerifyContent",
                 ["Verify" => $verify]
             ),
             "Verify" => $verify
@@ -227,11 +246,7 @@ class RegisterController extends Controller
 
         $this->extend("onAfterVerify", $member);
 
-        return $this->renderWith([
-            "Users_Register_verify",
-            "Users",
-            "Page"
-        ]);
+        return $this->render();
     }
 
     /**

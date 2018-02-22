@@ -19,6 +19,6 @@ class ControllerExtension extends Extension
      */
     public function getUserAccountNav()
     {
-        return $this->owner->renderWith("Users_AccountNav");
+        return $this->owner->renderWith("ilateral\\SilverStripe\\Users\\Includes\\UserAccountNav");
     }
 }

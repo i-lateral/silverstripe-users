@@ -40,10 +40,38 @@ class AccountController extends Controller implements PermissionProvider
      * @config
      */
     private static $allowed_actions = [
+        "index",
         "edit",
         "changepassword",
         "EditAccountForm",
         "ChangePasswordForm",
+    ];
+
+    /**
+     * Setup default templates for this controller
+     *
+     * @var array
+     */
+    protected $templates = [
+        'index' => [
+            'AccountController',
+            self::class,
+            'Page'
+        ],
+        'edit' => [
+            'AccountController_edit',
+            self::class . '_edit',
+            'AccountController',
+            self::class,
+            'Page'
+        ],
+        'changepassword' => [
+            'AccountController_changepassword',
+            self::class . '_changepassword',
+            'AccountController',
+            self::class,
+            'Page'
+        ]
     ];
 
     /**
@@ -183,7 +211,7 @@ class AccountController extends Controller implements PermissionProvider
         $sections->push(ArrayData::create([
             "Title" => "",
             "Content" => $this->renderWith(
-                "UsersProfileSummary",
+                "ilateral\\SilverStripe\\Users\\Includes\\ProfileSummary",
                 ["CurrentUser" => Member::currentUser()]
             )
         ]));
@@ -196,17 +224,14 @@ class AccountController extends Controller implements PermissionProvider
             "Title" => _t('Users.ProfileSummary', 'Profile Summary'),
             "MetaTitle" => _t('Users.ProfileSummary', 'Profile Summary'),
             "Content" => $this->renderWith(
-                "UsersAccountSections",
+                "ilateral\\SilverStripe\\Users\\Includes\\AccountSections",
                 ["Sections" => $sections]
             )
         ]);
 
         $this->extend("onBeforeIndex");
 
-        return $this->renderWith([
-            "UserAccount",
-            "Page"
-        ]);
+        return $this->render();
     }
 
     /**
@@ -231,11 +256,7 @@ class AccountController extends Controller implements PermissionProvider
 
         $this->extend("onBeforeEdit");
 
-        return $this->renderWith([
-            "UserAccount_edit",
-            "UserAccount",
-            "Page"
-        ]);
+        return $this->render();
     }
 
     /**
@@ -272,11 +293,7 @@ class AccountController extends Controller implements PermissionProvider
 
         $this->extend("onBeforeChangePassword");
 
-        return $this->renderWith([
-            "UserAccount_changepassword",
-            "UserAccount",
-            "Page"
-        ]);
+        return $this->render();
     }
 
     /**
