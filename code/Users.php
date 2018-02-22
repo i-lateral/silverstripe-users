@@ -66,7 +66,8 @@ class Users extends Object
      */
     public static function addNewUserGroup($code)
     {
-        self::$new_user_groups[] = $code;
+        Deprecation::notice("1.3", "addNewUserGroup depreciated, use global config instead");
+        self::config()->new_user_groups[] = $code;
     }
 
     /**
@@ -77,8 +78,8 @@ class Users extends Object
      */
     public static function removeNewUserGroup($code)
     {
-        if (isset(self::$new_user_groups[$code])) {
-            unset(self::$new_user_groups[$code]);
+        if (isset(self::config()->new_user_groups[$code])) {
+            unset(self::config()->new_user_groups[$code]);
         }
     }
 
@@ -101,7 +102,8 @@ class Users extends Object
      */
     public static function addVerificationGroup($code)
     {
-        self::$verification_groups[] = $code;
+        Deprecation::notice("1.3", "addVerificationGroup depreciated, use global config instead");
+        self::config()->verification_groups[] = $code;
     }
 
     /**
@@ -112,8 +114,8 @@ class Users extends Object
      */
     public static function removeVerificationGroup($code)
     {
-        if (isset(self::$verification_groups[$code])) {
-            unset(self::$verification_groups[$code]);
+        if (isset(self::config()->verification_groups[$code])) {
+            unset(self::config()->verification_groups[$code]);
         }
     }
 }
