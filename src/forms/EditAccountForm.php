@@ -1,11 +1,25 @@
 <?php
 
-class Users_EditAccountForm extends Form
+namespace ilateral\SilverStripe\Users\Forms;
+
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\HiddenField;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\EmailField;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Security;
+use SilverStripe\ORM\ValidationResult;
+
+class EditAccountForm extends Form
 {
 
     public function __construct($controller, $name = "Users_EditAccountForm")
     {
-        $fields = new FieldList(
+        $fields = FieldList::create(
             HiddenField::create("ID"),
             TextField::create(
                 "FirstName",
@@ -23,9 +37,9 @@ class Users_EditAccountForm extends Form
 
         $this->extend("updateFormFields", $fields);
 
-        $cancel_url = Controller::join_links($controller->Link());
+        $cancel_url = $controller->Link();
 
-        $actions = new FieldList(
+        $actions = FieldList::create(
             LiteralField::create(
                 "cancelLink",
                 '<a class="btn btn-red" href="'.$cancel_url.'">'. _t("Users.CANCEL", "Cancel") .'</a>'
@@ -37,11 +51,11 @@ class Users_EditAccountForm extends Form
 
         $this->extend("updateFormActions", $actions);
 
-        $required = new RequiredFields(array(
+        $required = RequiredFields::create([
             "FirstName",
             "Surname",
             "Email"
-        ));
+        ]);
 
         $this->extend("updateRequiredFields", $required);
 
@@ -65,24 +79,27 @@ class Users_EditAccountForm extends Form
     {
         $filter = array();
         $member = Member::get()->byID($data["ID"]);
+        $curr = Security::getCurrentUser();
 
-        // Check that a mamber isn't trying to mess up another users profile
-        if (Member::currentUserID() && $member->canEdit(Member::currentUser())) {
+        // Check that a member isn't trying to mess up another users profile
+        if (!empty($curr) && $member->canEdit($curr)) {
             // Save member
             $this->saveInto($member);
             $member->write();
-            
+
             $this->sessionMessage(
                 _t("Users.DETAILSUPDATED", "Account details updated"),
-                "success"
+                ValidationResult::TYPE_GOOD
             );
         } else {
             $this->sessionMessage(
                 _t("Users.CANNOTEDIT", "You cannot edit this account"),
-                "warning"
+                ValidationResult::TYPE_ERROR
             );
         }
 
-        return $this->controller->redirectBack();
+        return $this
+            ->getController()
+            ->redirectBack();
     }
 }

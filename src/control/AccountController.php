@@ -1,11 +1,29 @@
 <?php
 
+namespace ilateral\SilverStripe\Users\Control;
+
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Security\PermissionProvider;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Security;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\MemberAuthenticator\ChangePasswordForm;
+use SilverStripe\ORM\ValidationResult;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\View\ArrayData;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\CMS\Controllers\ContentController;
+use ilateral\SilverStripe\Users\Users;
+use ilateral\SilverStripe\Users\Forms\EditAccountForm;
+
 /**
  * Controller that is used to allow users to manage their accounts via
  * the front end of the site.
  *
  */
-class Users_Account_Controller extends Controller implements PermissionProvider
+class AccountController extends Controller implements PermissionProvider
 {
 
     /**
@@ -21,12 +39,12 @@ class Users_Account_Controller extends Controller implements PermissionProvider
      * @var array
      * @config
      */
-    private static $allowed_actions = array(
+    private static $allowed_actions = [
         "edit",
         "changepassword",
         "EditAccountForm",
         "ChangePasswordForm",
-    );
+    ];
 
     /**
      * User account associated with this controller
@@ -87,7 +105,7 @@ class Users_Account_Controller extends Controller implements PermissionProvider
         }
 
         // Set our member object
-        $member = Member::currentUser();
+        $member = Security::getCurrentUser();
 
         if ($member instanceof Member) {
             $this->member = $member;
@@ -152,101 +170,113 @@ class Users_Account_Controller extends Controller implements PermissionProvider
     }
 
     /**
-     * Display the currently outstanding orders for the current user
+     * Display the basic summary of this user and any additional
+     * "content sections" that have been added
      *
+     * @return HTMLText
      */
     public function index()
     {
         // Setup default profile summary sections
         $sections = ArrayList::create();
 
-        $sections->push(ArrayData::create(array(
+        $sections->push(ArrayData::create([
             "Title" => "",
             "Content" => $this->renderWith(
                 "UsersProfileSummary",
-                array("CurrentUser" => Member::currentUser())
+                ["CurrentUser" => Member::currentUser()]
             )
-        )));
+        ]));
 
         // Allow users to add extra content sections to the
         // summary
         $this->extend("updateContentSections", $sections);
 
-        $this->customise(array(
+        $this->customise([
             "Title" => _t('Users.ProfileSummary', 'Profile Summary'),
             "MetaTitle" => _t('Users.ProfileSummary', 'Profile Summary'),
             "Content" => $this->renderWith(
                 "UsersAccountSections",
-                array("Sections" => $sections)
+                ["Sections" => $sections]
             )
-        ));
+        ]);
 
         $this->extend("onBeforeIndex");
 
-        return $this->renderWith(array(
+        return $this->renderWith([
             "UserAccount",
             "Page"
-        ));
+        ]);
     }
 
+    /**
+     * Setup the ability for this user to edit their account details
+     *
+     * @return HTMLText
+     */
     public function edit()
     {
-        $member = Member::currentUser();
+        $member = Security::getCurrentUser();
         $form = $this->EditAccountForm();
 
         if ($member instanceof Member) {
             $form->loadDataFrom($member);
         }
 
-        $this->customise(array(
+        $this->customise([
             "Title" => _t("Users.EditAccountDetails", "Edit account details"),
             "MetaTitle" => _t("Users.EditAccountDetails", "Edit account details"),
             "Form"  => $form
-        ));
+        ]);
 
         $this->extend("onBeforeEdit");
 
-        return $this->renderWith(array(
+        return $this->renderWith([
             "UserAccount_edit",
             "UserAccount",
             "Page"
-        ));
+        ]);
     }
 
+    /**
+     * Generate a form to allow the user to change their password
+     *
+     * @return HTMLText
+     */
     public function changepassword()
     {
         // Set the back URL for this form
+        $request = $this->getRequest();
+        $session = $request->getSession();
+        $password_set = $request()->getVar("s");
         $back_url = Controller::join_links(
             $this->Link("changepassword"),
             "?s=1"
         );
-        
-        Session::set("BackURL", $back_url);
-        
+        $session->set("BackURL", $back_url);
         $form = $this->ChangePasswordForm();
-        
+
         // Is password changed, set a session message.
-        $password_set = $this->request->getVar("s");
         if($password_set && $password_set == 1) {
             $form->sessionMessage(
                 _t("Users.PasswordChangedSuccessfully","Password Changed Successfully"),
-                "good"
+                ValidationResult::TYPE_GOOD
             );
         }
 
-        $this->customise(array(
+        $this->customise([
             "Title" => _t("Security.ChangeYourPassword", "Change your password"),
             "MetaTitle" => _t("Security.ChangeYourPassword", "Change your password"),
             "Form"  => $form
-        ));
+        ]);
 
         $this->extend("onBeforeChangePassword");
 
-        return $this->renderWith(array(
+        return $this->renderWith([
             "UserAccount_changepassword",
             "UserAccount",
             "Page"
-        ));
+        ]);
     }
 
     /**
@@ -257,7 +287,7 @@ class Users_Account_Controller extends Controller implements PermissionProvider
      */
     public function EditAccountForm()
     {
-        $form = Users_EditAccountForm::create($this, "EditAccountForm");
+        $form = EditAccountForm::create($this, "EditAccountForm");
 
         $this->extend("updateEditAccountForm", $form);
 
@@ -303,29 +333,28 @@ class Users_Account_Controller extends Controller implements PermissionProvider
     public function getAccountMenu()
     {
         $menu = ArrayList::create();
-        
         $curr_action = $this->request->param("Action");
 
-        $menu->add(ArrayData::create(array(
+        $menu->add(ArrayData::create([
             "ID"    => 0,
             "Title" => _t('Users.PROFILESUMMARY', "Profile Summary"),
             "Link"  => $this->Link(),
             "LinkingMode" => (!$curr_action) ? "current" : "link"
-        )));
+        ]));
 
-        $menu->add(ArrayData::create(array(
+        $menu->add(ArrayData::create([
             "ID"    => 10,
             "Title" => _t('Users.EDITDETAILS', "Edit account details"),
             "Link"  => $this->Link("edit"),
             "LinkingMode" => ($curr_action == "edit") ? "current" : "link"
-        )));
+        ]));
 
-        $menu->add(ArrayData::create(array(
+        $menu->add(ArrayData::create([
             "ID"    => 30,
             "Title" => _t('Users.CHANGEPASSWORD', "Change password"),
             "Link"  => $this->Link("changepassword"),
             "LinkingMode" => ($curr_action == "changepassword") ? "current" : "link"
-        )));
+        ]));
 
         $this->extend("updateAccountMenu", $menu);
 
@@ -334,19 +363,19 @@ class Users_Account_Controller extends Controller implements PermissionProvider
 
     public function providePermissions()
     {
-        return array(
-            "USERS_MANAGE_ACCOUNT" => array(
+        return [
+            "USERS_MANAGE_ACCOUNT" => [
                 'name' => 'Manage user account',
                 'help' => 'Allow user to manage their account details',
                 'category' => 'Frontend Users',
                 'sort' => 100
-            ),
-            "USERS_VERIFIED" => array(
+            ],
+            "USERS_VERIFIED" => [
                 'name' => 'Verified user',
                 'help' => 'Users have verified their account',
                 'category' => 'Frontend Users',
                 'sort' => 100
-            ),
-        );
+            ],
+        ];
     }
 }

@@ -1,6 +1,18 @@
 <?php
 
-class Ext_Users_Member extends DataExtension
+namespace ilateral\SilverStripe\Users\Extensions;
+
+use SilverStripe\ORM\DataExtension;
+use SilverStripe\Control\Controller;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Group;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\View\ArrayData;
+use SilverStripe\Control\Email\Email;
+use ilateral\SilverStripe\Users\Users;
+use ilateral\SilverStripe\Users\Control\RegisterController;
+
+class MemberExtension extends DataExtension
 {
     private static $db = array(
         "VerificationCode" => "Varchar(40)"
@@ -67,7 +79,7 @@ class Ext_Users_Member extends DataExtension
     public function sendVerificationEmail()
     {
         if ($this->owner->exists()) {
-            $controller = Injector::inst()->get("Users_Register_Controller");
+            $controller = Injector::inst()->get(RegisterController::class);
             $subject = _t("Users.PleaseVerify", "Please verify your account");
 
             if (Users::config()->send_email_from) {
@@ -82,13 +94,13 @@ class Ext_Users_Member extends DataExtension
                 ->setTo($this->owner->Email)
                 ->setSubject($subject)
                 ->setTemplate('UsersAccountVerification')
-                ->populateTemplate(ArrayData::create(array(
+                ->populateTemplate(ArrayData::create([
                     "Link" => Controller::join_links(
                         $controller->AbsoluteLink("verify"),
                         $this->owner->ID,
                         $this->owner->VerificationCode
                     )
-                )));
+                ]));
 
             $email->send();
 

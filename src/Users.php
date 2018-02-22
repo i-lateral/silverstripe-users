@@ -1,5 +1,10 @@
 <?php
 
+namespace ilateral\SilverStripe\Users;
+
+use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Dev\Deprecation;
+
 /**
  * Root class for users, this will mostly be used to store generic
  * config, but will probably be extended in future to provide additional
@@ -8,8 +13,10 @@
  * @author i-lateral (http://www.i-lateral.com)
  * @package users
  */
-class Users extends Object
+class Users
 {
+
+    use Configurable;
 
 	/**
 	 * Minimum character length of the password required
@@ -122,7 +129,7 @@ class Users extends Object
     );
 
     /**
-     * Add a group to the list of groups a new user is added to on
+     * Add a group toextends Object the list of groups a new user is added to on
      * registering.
      *
      * @param string Group code that will be used

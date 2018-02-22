@@ -1,5 +1,24 @@
 <?php
 
+namespace ilateral\SilverStripe\Users\Control;
+
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Security;
+use SilverStripe\Security\Group;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\EmailField;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\ConfirmedPasswordField;
+use SilverStripe\ORM\ValidationResult;
+use SilverStripe\CMS\Controllers\ContentController;
+use ilateral\SilverStripe\Users\Users;
+
 /**
  * Base controller class for users to register. Provides extension hooks to
  * allow third party overwriting of both index and register form actions
@@ -11,7 +30,7 @@
  * $verification_groups config variable
  *
  */
-class Users_Register_Controller extends Controller
+class RegisterController extends Controller
 {
 
     /**
@@ -26,12 +45,12 @@ class Users_Register_Controller extends Controller
      *
      * @var array
      */
-    private static $allowed_actions = array(
+    private static $allowed_actions = [
         "index",
         "sendverification",
         "verify",
         "RegisterForm"
-    );
+    ];
 
     /**
      * Internal function designed to allow us to send a verification
@@ -109,24 +128,23 @@ class Users_Register_Controller extends Controller
     /**
      * Default action this controller will deal with
      *
-     * @param SS_HTTPRequest $request
      * @return HTMLText
      */
-    public function index(SS_HTTPRequest $request)
+    public function index()
     {
-        $this->customise(array(
+        $this->customise([
             'Title'     => _t('Users.Register', 'Register'),
             'MetaTitle' => _t('Users.Register', 'Register'),
             'Form'      => $this->RegisterForm(),
-        ));
+        ]);
 
         $this->extend("updateIndexAction");
 
-        return $this->renderWith(array(
+        return $this->renderWith([
             "Users_Register",
             "Users",
             "Page"
-        ));
+        ]);
     }
 
 
@@ -134,10 +152,9 @@ class Users_Register_Controller extends Controller
      * Send a verification email to the user provided (if verification
      * emails are enabled and account is not already verified)
      *
-     * @param SS_HTTPRequest $request
      * @return HTMLText
      */
-    public function sendverification(SS_HTTPRequest $request)
+    public function sendverification()
     {
         // If we don't allow verification emails, return an error
         if (!Users::config()->send_verification_email) {
@@ -145,48 +162,42 @@ class Users_Register_Controller extends Controller
         }
 
         $sent = false;
+        $member = Security::getCurrentUser();
 
-        if (Member::currentUserID()) {
-            $member = Member::currentUser();
-        } else {
-            $member = Member::get()->byID($this->getRequest()->param("ID"));
-        }
-
-        if ($member && !$member->isVerified()) {
+        if ($member->exists() && !$member->isVerified()) {
             $sent = $this->send_verification_email($member);
         }
 
-        $this->customise(array(
+        $this->customise([
             "Title" => _t('Users.AccountVerification','Account Verification'),
             "MetaTitle" => _t('Users.AccountVerification','Account Verification'),
             "Content" => $this->renderWith(
                 "UsersSendVerificationContent",
-                array("Sent" => $sent)
+                ["Sent" => $sent]
             ),
             "Sent" => $sent
-        ));
+        ]);
 
         $this->extend("updateSendVerificationAction");
 
-        return $this->renderWith(array(
+        return $this->renderWith([
             "Users_Register_sendverification",
             "Users",
             "Page"
-        ));
+        ]);
     }
-
 
     /**
      * Verify the provided user (ID) using the verification code (Other
      * ID) provided
      *
-     * @param SS_HTTPRequest $request
      * @return HTMLText
      */
-    public function verify(SS_HTTPRequest $request)
+    public function verify()
     {   
-        $member = Member::get()->byID($this->getRequest()->param("ID"));
+        $id = $this->getRequest()->param("ID");
         $code = $this->getRequest()->param("OtherID");
+        $member = Member::get()->byID($id);
         $verify = false;
 
         // Check verification group exists, if not, make it
@@ -204,23 +215,23 @@ class Users_Register_Controller extends Controller
             }
         }
 
-        $this->customise(array(
+        $this->customise([
             "Title" => _t('Users.AccountVerification','Account Verification'),
             "MetaTitle" => _t('Users.AccountVerification','Account Verification'),
             "Content" => $this->renderWith(
                 "UsersVerifyContent",
-                array("Verify" => $verify)
+                ["Verify" => $verify]
             ),
             "Verify" => $verify
-        ));
+        ]);
 
         $this->extend("onAfterVerify", $member);
 
-        return $this->renderWith(array(
+        return $this->renderWith([
             "Users_Register_verify",
             "Users",
             "Page"
-        ));
+        ]);
     }
 
     /**
@@ -230,57 +241,52 @@ class Users_Register_Controller extends Controller
      */
     public function RegisterForm()
     {
-
+        $session = $this->getRequest()->getSession();
+        
         // If back URL set, push to session
         if (isset($_REQUEST['BackURL'])) {
-            Session::set('BackURL', $_REQUEST['BackURL']);
+            $session->set(
+                'BackURL',
+                $_REQUEST['BackURL']
+            );
         }
 
         $config = Users::config();
 
-        // Setup form fields
-        $fields = FieldList::create(
-            TextField::create("FirstName"),
-            TextField::create("Surname"),
-            EmailField::create("Email"),
-            $password_field = ConfirmedPasswordField::create("Password")
-        );
+        $form = Form::create(
+            $this,
+            "RegisterForm",
+            FieldList::create(
+                TextField::create("FirstName"),
+                TextField::create("Surname"),
+                EmailField::create("Email"),
+                $password_field = ConfirmedPasswordField::create("Password")
+            ),
+            FieldList::create(
+                FormAction::create("doRegister", "Register")
+                    ->addExtraClass("btn")
+                    ->addExtraClass("btn-green")
+            ),
+            RequiredFields::create([
+                "FirstName",
+                "Surname",
+                "Email",
+                "Password"
+            ])
+        )->addExtraClass("forms")
+        ->addExtraClass("forms-columnar");
 
         $password_field->minLength = $config->get("password_min_length");
         $password_field->maxLength = $config->get("password_max_length");
         $password_field->requireStrongPassword = $config->get("password_require_strong");
 
-        // Setup form actions
-        $actions = new FieldList(
-            FormAction::create("doRegister", "Register")
-                ->addExtraClass("btn")
-                ->addExtraClass("btn-green")
-        );
-
-        // Setup required fields
-        $required = new RequiredFields(array(
-            "FirstName",
-            "Surname",
-            "Email",
-            "Password"
-        ));
-
-        $form = Form::create(
-            $this,
-            "RegisterForm",
-            $fields,
-            $actions,
-            $required
-        )->addExtraClass("forms")
-        ->addExtraClass("forms-columnar");
-
         $this->extend("updateRegisterForm", $form);
 
-        $session_data = Session::get("Form.{$form->FormName()}.data");
+        $session_data = $session->get("Form.{$form->FormName()}.data");
 
         if ($session_data && is_array($session_data)) {
             $form->loadDataFrom($session_data);
-            Session::clear("Form.{$form->FormName()}.data");
+            $session->clear("Form.{$form->FormName()}.data");
         }
 
         return $form;
@@ -301,7 +307,8 @@ class Users_Register_Controller extends Controller
      */
     public function doRegister($data, $form)
     {
-        $filter = array();
+        $filter = [];
+        $session = $this->getRequest()->getSession();
 
         if (isset($data['Email'])) {
             $filter['Email'] = $data['Email'];
@@ -312,10 +319,9 @@ class Users_Register_Controller extends Controller
         // Check if a user already exists
         if ($member = Member::get()->filter($filter)->first()) {
             if ($member) {
-                $form->addErrorMessage(
-                    "Blurb",
+                $form->sessionMessage(
                     "Sorry, an account already exists with those details.",
-                    "bad"
+                    ValidationResult::TYPE_ERROR
                 );
 
                 // Load errors into session and post back
@@ -331,7 +337,7 @@ class Users_Register_Controller extends Controller
 
         $this->extend("updateNewMember", $member, $data);
 
-        $session_url = Session::get("BackURL");
+        $session_url = $session->get("BackURL");
         $request_url = $this->getRequest()->requestVar("BackURL");
 
         // If a back URL is used in session.
@@ -340,7 +346,7 @@ class Users_Register_Controller extends Controller
         } elseif (!empty($request_url)) {
             $redirect_url = $request_url;
         } else {
-            $controller = Injector::inst()->get("Users_Account_Controller");
+            $controller = Injector::inst()->get(AccountController::class);
             $redirect_url = $controller->Link();
         }
 
