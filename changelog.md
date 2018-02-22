@@ -18,3 +18,9 @@ Minor update to:
 * Add License
 * Add contributing file
 * Update docs and link functions
+
+# 1.1.0
+
+* Massivley simplify templates
+* Add new docs
+* Minor code imprevements
