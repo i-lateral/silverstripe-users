@@ -341,7 +341,7 @@ class RegisterController extends Controller
 
                 // Load errors into session and post back
                 unset($data["Password"]);
-                Session::set("Form.{$form->FormName()}.data", $data);
+                $session->set("Form.{$form->FormName()}.data", $data);
 
                 return $this->redirectBack();
             }
