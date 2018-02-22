@@ -1,23 +1,40 @@
-Usage
-=====
+# Usage
 
-## Adding users to your own group when registering
+This module mkaes use of two controllers that handle account 
+creation and usage.
 
-If you want to add users to your own groups automatically when they
-register with your site (so you can give them custom permissions on
-registration), it is fairly simple to do. You just need to add the group
-code to the Users config.
+These controllers are designed as framework only, so can be used
+without the CMS (but do contain some basic CMS support, if it is 
+installed).
 
-To do this, just add the following to your *_config.php* file.
+## Registration
 
-    Users::addNewUserGroup("your-group-code");
+The registration controller handles creation of new user accounts
+and verification of accounts. By default this is accesed via the
+following URL:
 
-## Removing default user groups assigned when registering
+    http://yoursite.com/users/register
 
-Alternativley, if you do not want to add new users to a group (for
-example, a group that has been added by another module) you will need
-to update the users config.
+You can add new fields to the registration form using provided extension hooks.
 
-To do this, just add the following to your *_config.php* file.
+## Account Management
 
-    Users::removeNewUserGroup("group-code-to-remove");
+You can access the account managment controller via the URL:
+
+    http://yoursite.com/users/account
+
+By default this allows you to:
+
+* View a summary of the user account
+* Change account details
+* Change account password (via a seperate form).
+
+You can also edit these interfaces using provided extension hooks.
+
+## User acccount menu
+
+This module makes `$UserAccountNav` available to all your 
+controllers. You can include this variable in your templates and it 
+will add an account navigation menu.
+
+If you wish to change the styling of this menu, simply edit the `Users_AccountNav.ss` template include.

@@ -7,4 +7,5 @@ You find out more info about this module in the following docs:
 
 * [Insalling](Installing.md)
 * [Usage](Usage.md)
+* [Configuring](Configuring.md)
 * [Examples](Examples.md)
