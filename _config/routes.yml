@@ -1,5 +1,5 @@
 ---
-Name: userroutes
+Name: usersroutes
 After: framework/routes#rootroutes
 ---
 SilverStripe\Control\Director:

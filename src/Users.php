@@ -50,7 +50,7 @@ class Users
      * actually deny the user the ability to login, it only alerts them
      * that they need validiation
      *
-     * @var Boolean
+     * @var boolean
      * @config
      */
     private static $require_verification = true;
@@ -59,7 +59,7 @@ class Users
      * Stipulate whether to send a verification email to users after
      * registration
      *
-     * @var Boolean
+     * @var boolean
      * @config
      */
     private static $send_verification_email = false;
@@ -68,7 +68,7 @@ class Users
      * Stipulate the sender address for emails sent from this module. If
      * not set, use the default @Email.admin_email instead.
      *
-     * @var strong
+     * @var string
      * @config
      */
     private static $send_email_from;
@@ -76,7 +76,7 @@ class Users
     /**
      * Auto login users after registration
      *
-     * @var Boolean
+     * @var boolean
      * @config
      */
     private static $login_after_register = true;
@@ -88,9 +88,9 @@ class Users
      * @var array
      * @config
      */
-    private static $new_user_groups = array(
+    private static $new_user_groups = [
         "users-frontend"
-    );
+    ];
 
     /**
      * Add a group to the list of groups a new user is added to on
@@ -124,9 +124,9 @@ class Users
      * @var array
      * @config
      */
-    private static $verification_groups = array(
+    private static $verification_groups = [
         "users-verified"
-    );
+    ];
 
     /**
      * Add a group toextends Object the list of groups a new user is added to on
