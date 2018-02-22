@@ -134,6 +134,24 @@ class Users_Account_Controller extends Controller implements PermissionProvider
     }
 
     /**
+     * If content controller exists, return it's menu function
+     * @param int $level Menu level to return.
+     * @return ArrayList
+     */
+    public function getMenu($level = 1)
+    {
+        if (class_exists(ContentController::class)) {
+            $controller = Injector::inst()->get(ContentController::class);
+            return $controller->getMenu($level);
+        }
+    }
+
+    public function Menu($level)
+    {
+        return $this->getMenu();
+    }
+
+    /**
      * Display the currently outstanding orders for the current user
      *
      */

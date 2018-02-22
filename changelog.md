@@ -28,3 +28,4 @@ Minor update to:
 # 1.1.1
 
 * Allow setting of password restrictions on registration
+* Add out of the box support for ContentController::getMenu

@@ -89,6 +89,24 @@ class Users_Register_Controller extends Controller
     }
 
     /**
+     * If content controller exists, return it's menu function
+     * @param int $level Menu level to return.
+     * @return ArrayList
+     */
+    public function getMenu($level = 1)
+    {
+        if (class_exists(ContentController::class)) {
+            $controller = Injector::inst()->get(ContentController::class);
+            return $controller->getMenu($level);
+        }
+    }
+
+    public function Menu($level)
+    {
+        return $this->getMenu();
+    }
+
+    /**
      * Default action this controller will deal with
      *
      * @param SS_HTTPRequest $request
