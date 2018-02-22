@@ -218,13 +218,19 @@ class Users_Register_Controller extends Controller
             Session::set('BackURL', $_REQUEST['BackURL']);
         }
 
+        $config = Users::config();
+
         // Setup form fields
         $fields = FieldList::create(
             TextField::create("FirstName"),
             TextField::create("Surname"),
             EmailField::create("Email"),
-            ConfirmedPasswordField::create("Password")
+            $password_field = ConfirmedPasswordField::create("Password")
         );
+
+        $password_field->minLength = $config->get("password_min_length");
+        $password_field->maxLength = $config->get("password_max_length");
+        $password_field->requireStrongPassword = $config->get("password_require_strong");
 
         // Setup form actions
         $actions = new FieldList(
@@ -241,9 +247,14 @@ class Users_Register_Controller extends Controller
             "Password"
         ));
 
-        $form = Form::create($this, "RegisterForm", $fields, $actions, $required)
-            ->addExtraClass("forms")
-            ->addExtraClass("forms-columnar");
+        $form = Form::create(
+            $this,
+            "RegisterForm",
+            $fields,
+            $actions,
+            $required
+        )->addExtraClass("forms")
+        ->addExtraClass("forms-columnar");
 
         $this->extend("updateRegisterForm", $form);
 

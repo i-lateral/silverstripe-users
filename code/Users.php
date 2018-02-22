@@ -11,6 +11,33 @@
 class Users extends Object
 {
 
+	/**
+	 * Minimum character length of the password required
+     * on registration/account editing
+	 *
+	 * @var int
+     * @config
+	 */
+	private static $password_min_length = 6;
+
+	/**
+	 * Maximum character length of the password required
+     * on registration/account editing
+	 *
+	 * @var int
+     * @config
+	 */
+	private static $password_max_length = 16;
+
+	/**
+	 * Enforces strong password (at least one digit and one alphanumeric
+	 * character) on registration/account editing
+	 *
+	 * @var boolean
+     * @config
+	 */
+	private static $password_require_strong = false;
+
     /**
      * Stipulate if a user requires verification. NOTE this does not
      * actually deny the user the ability to login, it only alerts them
@@ -28,7 +55,7 @@ class Users extends Object
      * @var Boolean
      * @config
      */
-    private static $send_verification_email = true;
+    private static $send_verification_email = false;
 
     /**
      * Stipulate the sender address for emails sent from this module. If

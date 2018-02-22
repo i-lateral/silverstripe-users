@@ -24,3 +24,7 @@ Minor update to:
 * Massivley simplify templates
 * Add new docs
 * Minor code imprevements
+
+# 1.1.1
+
+* Allow setting of password restrictions on registration

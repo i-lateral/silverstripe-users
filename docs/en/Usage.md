@@ -17,6 +17,18 @@ following URL:
 
 You can add new fields to the registration form using provided extension hooks.
 
+### Password Security
+
+This module allows enforcement of password security on registration.
+By default it required a password between 6 & 16 characters in 
+length, but this can be changed and you can also enforce strong 
+passwords. To do this, you can add this to your `config.yml`:
+
+    Users:
+      password_min_length: 8
+      password_max_length: 20
+      password_require_strong: true
+
 ## Account Management
 
 You can access the account managment controller via the URL:
