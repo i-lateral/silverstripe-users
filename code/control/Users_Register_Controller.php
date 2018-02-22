@@ -111,6 +111,12 @@ class Users_Register_Controller extends Controller
         );
     }
 
+    /**
+     * Default action this controller will deal with
+     *
+     * @param SS_HTTPRequest $request
+     * @return string
+     */
     public function index(SS_HTTPRequest $request)
     {
         $this->customise(array(
@@ -134,8 +140,10 @@ class Users_Register_Controller extends Controller
      * Send a verification email to the user provided (if verification
      * emails are enabled and account is not already verified)
      *
+     * @param SS_HTTPRequest $request
+     * @return string
      */
-    public function sendverification()
+    public function sendverification(SS_HTTPRequest $request)
     {
         $sent = false;
 
@@ -168,8 +176,10 @@ class Users_Register_Controller extends Controller
      * Verify the provided user (ID) using the verification code (Other
      * ID) provided
      *
+     * @param SS_HTTPRequest $request
+     * @return string
      */
-    public function verify()
+    public function verify(SS_HTTPRequest $request)
     {
         $member = Member::get()->byID($this->request->param("ID"));
         $code = $this->request->param("OtherID");
@@ -303,8 +313,6 @@ class Users_Register_Controller extends Controller
         $member->VerificationCode = sha1(mt_rand() . mt_rand());
         $member->write();
 
-        $this->extend("updateNewMember", $member, $data);
-
         // Add member to any groups that have been specified
         if (count(Users::config()->new_user_groups)) {
             $groups = Group::get()->filter(array(
@@ -317,11 +325,11 @@ class Users_Register_Controller extends Controller
             }
         }
 
+        $this->extend("updateNewMember", $member, $data);
+
         // Send a verification email, if needed
         if (Users::config()->send_verification_email) {
-            $sent = $this->send_verification_email($member);
-        } else {
-            $sent = false;
+            $this->send_verification_email($member);
         }
 
         // Login (if enabled)
@@ -329,14 +337,17 @@ class Users_Register_Controller extends Controller
             $member->LogIn(isset($data['Remember']));
         }
 
+        $session_url = Session::get("BackURL");
+        $request_url = $this->getRequest()->requestVar("BackURL");
+
         // If a back URL is used in session.
-        if (Session::get("BackURL")) {
-            $redirect_url = Session::get("BackURL");
+        if (!empty($session_url)) {
+            $redirect_url = $session_url;
+        } elseif (!empty($request_url)) {
+            $redirect_url = $request_url;
         } else {
-            $redirect_url = Controller::join_links(
-                BASE_URL,
-                Users_Account_Controller::config()->url_segment
-            );
+            $controller = Injector::inst()->get("Users_Account_Controller");
+            $redirect_url = $controller->Link();
         }
 
         return $this->redirect($redirect_url);
