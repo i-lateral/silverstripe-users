@@ -42,31 +42,8 @@ class Users_Register_Controller extends Controller
      */
     protected function send_verification_email(Member $member)
     {
-        if ($member) {
-            $subject = _t("Users.PleaseVerify", "Please verify your account");
-            if (Users::config()->send_email_from) {
-                $from = Users::config()->send_email_from;
-            } else {
-                $from = Email::config()->admin_email;
-            }
-
-            $body = $this->renderWith(
-                'UsersAccountVerification',
-                array(
-                    "Link" => Controller::join_links(
-                        Director::absoluteBaseURL(),
-                        $this->config()->url_segment,
-                        "verify",
-                        $member->ID,
-                        $member->VerificationCode
-                    )
-                )
-            );
-
-            $email = new Email($from, $member->Email, $subject, $body);
-            $email->sendPlain();
-
-            return true;
+        if ($member->exists()) {
+            return $member->sendVerificationEmail();            
         }
 
         return false;
@@ -321,35 +298,9 @@ class Users_Register_Controller extends Controller
         }
 
         $member = Member::create();
-        $form->saveInto($member);
-
-        // Set verification code for this user
-        $member->VerificationCode = sha1(mt_rand() . mt_rand());
-        $member->write();
-
-        // Add member to any groups that have been specified
-        if (count(Users::config()->new_user_groups)) {
-            $groups = Group::get()->filter(array(
-                "Code" => Users::config()->new_user_groups
-            ));
-
-            foreach ($groups as $group) {
-                $group->Members()->add($member);
-                $group->write();
-            }
-        }
+        $member->Register($data);
 
         $this->extend("updateNewMember", $member, $data);
-
-        // Send a verification email, if needed
-        if (Users::config()->send_verification_email) {
-            $this->send_verification_email($member);
-        }
-
-        // Login (if enabled)
-        if (Users::config()->login_after_register) {
-            $member->LogIn(isset($data['Remember']));
-        }
 
         $session_url = Session::get("BackURL");
         $request_url = $this->getRequest()->requestVar("BackURL");
