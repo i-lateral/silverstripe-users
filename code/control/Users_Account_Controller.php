@@ -139,14 +139,33 @@ class Users_Account_Controller extends Controller implements PermissionProvider
      */
     public function index()
     {
+        // Setup default profile summary sections
+        $sections = ArrayList::create();
+
+        $sections->push(ArrayData::create(array(
+            "Title" => "",
+            "Content" => $this->renderWith(
+                "UsersProfileSummary",
+                array("CurrentUser" => Member::currentUser())
+            )
+        )));
+
+        // Allow users to add extra content sections to the
+        // summary
+        $this->extend("updateContentSections", $sections);
+
         $this->customise(array(
-            "ClassName" => "AccountPage"
+            "Title" => _t('Users.ProfileSummary', 'Profile Summary'),
+            "MetaTitle" => _t('Users.ProfileSummary', 'Profile Summary'),
+            "Content" => $this->renderWith(
+                "UsersAccountSections",
+                array("Sections" => $sections)
+            )
         ));
 
         $this->extend("onBeforeIndex");
 
         return $this->renderWith(array(
-            "UserAccount",
             "UserAccount",
             "Page"
         ));
@@ -162,7 +181,8 @@ class Users_Account_Controller extends Controller implements PermissionProvider
         }
 
         $this->customise(array(
-            "ClassName" => "AccountPage",
+            "Title" => _t("Users.EditAccountDetails", "Edit account details"),
+            "MetaTitle" => _t("Users.EditAccountDetails", "Edit account details"),
             "Form"  => $form
         ));
 
@@ -197,7 +217,8 @@ class Users_Account_Controller extends Controller implements PermissionProvider
         }
 
         $this->customise(array(
-            "ClassName" => "AccountPage",
+            "Title" => _t("Security.ChangeYourPassword", "Change your password"),
+            "MetaTitle" => _t("Security.ChangeYourPassword", "Change your password"),
             "Form"  => $form
         ));
 
@@ -263,25 +284,25 @@ class Users_Account_Controller extends Controller implements PermissionProvider
      */
     public function getAccountMenu()
     {
-        $menu = new ArrayList();
+        $menu = ArrayList::create();
         
         $curr_action = $this->request->param("Action");
 
-        $menu->add(new ArrayData(array(
+        $menu->add(ArrayData::create(array(
             "ID"    => 0,
             "Title" => _t('Users.PROFILESUMMARY', "Profile Summary"),
             "Link"  => $this->Link(),
             "LinkingMode" => (!$curr_action) ? "current" : "link"
         )));
 
-        $menu->add(new ArrayData(array(
+        $menu->add(ArrayData::create(array(
             "ID"    => 10,
             "Title" => _t('Users.EDITDETAILS', "Edit account details"),
             "Link"  => $this->Link("edit"),
             "LinkingMode" => ($curr_action == "edit") ? "current" : "link"
         )));
 
-        $menu->add(new ArrayData(array(
+        $menu->add(ArrayData::create(array(
             "ID"    => 30,
             "Title" => _t('Users.CHANGEPASSWORD', "Change password"),
             "Link"  => $this->Link("changepassword"),
