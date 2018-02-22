@@ -6,7 +6,10 @@ use SilverStripe\ORM\DataExtension;
 use SilverStripe\Control\Controller;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Group;
+use SilverStripe\Security\Security;
+use SilverStripe\Security\IdentityStore;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\View\ArrayData;
 use SilverStripe\Control\Email\Email;
 use ilateral\SilverStripe\Users\Users;
@@ -65,7 +68,12 @@ class MemberExtension extends DataExtension
 
         // Login (if enabled)
         if (Users::config()->login_after_register) {
-            $this->owner->LogIn(isset($data['Remember']));
+            /** IdentityStore */
+            $request = Injector::inst()->get(HTTPRequest::class);
+            $rememberMe = (isset($data['Remember']) && Security::config()->get('autologin_enabled'));
+            /** @var IdentityStore $identityStore */
+            $identityStore = Injector::inst()->get(IdentityStore::class);
+            $identityStore->logIn($this->owner, $rememberMe, $request);
         }
 
         return $this->owner;
@@ -93,8 +101,8 @@ class MemberExtension extends DataExtension
                 ->setFrom($from)
                 ->setTo($this->owner->Email)
                 ->setSubject($subject)
-                ->setTemplate("ilateral\\SilverStripe\\Users\\Email\\AccountVerification")
-                ->populateTemplate(ArrayData::create([
+                ->setHTMLTemplate("ilateral\\SilverStripe\\Users\\Email\\AccountVerification")
+                ->setData(ArrayData::create([
                     "Link" => Controller::join_links(
                         $controller->AbsoluteLink("verify"),
                         $this->owner->ID,
@@ -102,9 +110,9 @@ class MemberExtension extends DataExtension
                     )
                 ]));
 
-            $email->send();
-
-            return true;
+            if ($email->send()) {
+                return true;
+            }
         }
 
         return false;
