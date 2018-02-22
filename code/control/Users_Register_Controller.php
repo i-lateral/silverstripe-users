@@ -120,9 +120,8 @@ class Users_Register_Controller extends Controller
     public function index(SS_HTTPRequest $request)
     {
         $this->customise(array(
-            'Title'     => "Register",
-            'ClassName' => 'RegisterPage',
-            'Content'   => '',
+            'Title'     => _t('Users.Register', 'Register'),
+            'MetaTitle' => _t('Users.Register', 'Register'),
             'Form'      => $this->RegisterForm(),
         ));
 
@@ -145,6 +144,11 @@ class Users_Register_Controller extends Controller
      */
     public function sendverification(SS_HTTPRequest $request)
     {
+        // If we don't allow verification emails, return an error
+        if (!Users::config()->send_verification_email) {
+            return $this->httpError(400);
+        }
+
         $sent = false;
 
         if (Member::currentUserID()) {
@@ -153,16 +157,21 @@ class Users_Register_Controller extends Controller
             $member = Member::get()->byID($this->getRequest()->param("ID"));
         }
 
-        if ($member && !$member->isVerified() && Users::config()->send_verification_email) {
+        if ($member && !$member->isVerified()) {
             $sent = $this->send_verification_email($member);
-        } else {
-            $sent = false;
         }
 
         $this->customise(array(
-            "ClassName" => "RegisterPage",
+            "Title" => _t('Users.AccountVerification','Account Verification'),
+            "MetaTitle" => _t('Users.AccountVerification','Account Verification'),
+            "Content" => $this->renderWith(
+                "UsersSendVerificationContent",
+                array("Sent" => $sent)
+            ),
             "Sent" => $sent
         ));
+
+        $this->extend("updateSendVerificationAction");
 
         return $this->renderWith(array(
             "Users_Register_sendverification",
@@ -180,7 +189,7 @@ class Users_Register_Controller extends Controller
      * @return HTMLText
      */
     public function verify(SS_HTTPRequest $request)
-    {
+    {   
         $member = Member::get()->byID($this->getRequest()->param("ID"));
         $code = $this->getRequest()->param("OtherID");
         $verify = false;
@@ -201,7 +210,12 @@ class Users_Register_Controller extends Controller
         }
 
         $this->customise(array(
-            "ClassName" => "RegisterPage",
+            "Title" => _t('Users.AccountVerification','Account Verification'),
+            "MetaTitle" => _t('Users.AccountVerification','Account Verification'),
+            "Content" => $this->renderWith(
+                "UsersVerifyContent",
+                array("Verify" => $verify)
+            ),
             "Verify" => $verify
         ));
 
