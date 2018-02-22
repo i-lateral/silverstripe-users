@@ -29,3 +29,7 @@ Minor update to:
 
 * Allow setting of password restrictions on registration
 * Add out of the box support for ContentController::getMenu
+
+# 2.0.0
+
+* SS4 support based on version 1.1.1
