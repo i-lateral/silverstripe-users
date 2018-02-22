@@ -212,7 +212,7 @@ class AccountController extends Controller implements PermissionProvider
             "Title" => "",
             "Content" => $this->renderWith(
                 "ilateral\\SilverStripe\\Users\\Includes\\ProfileSummary",
-                ["CurrentUser" => Member::currentUser()]
+                ["CurrentUser" => Security::getCurrentUser()]
             )
         ]));
 
