@@ -35,8 +35,16 @@ Minor update to:
 * Update to index extension call to more logical naming
 * Minor tweak to account summary template
 
+# 1.2.1
+
+* Add additional extension hooks when edit form submitted
+
 # 2.0.0
 
 * SS4 support based on version 1.1.1
 * Update to index extension call to more logical naming
 * Minor tweak to account summary template
+
+# 2.0.1
+
+* Add additional extension hooks when edit form submitted

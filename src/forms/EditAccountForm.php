@@ -81,6 +81,8 @@ class EditAccountForm extends Form
         $member = Member::get()->byID($data["ID"]);
         $curr = Security::getCurrentUser();
 
+        $this->extend("onBeforeUpdate", $data);
+        
         // Check that a member isn't trying to mess up another users profile
         if (!empty($curr) && $member->canEdit($curr)) {
             // Save member
@@ -97,6 +99,8 @@ class EditAccountForm extends Form
                 ValidationResult::TYPE_ERROR
             );
         }
+
+        $this->extend("onAfterUpdate", $data);
 
         return $this
             ->getController()
