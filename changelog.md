@@ -30,6 +30,16 @@ Minor update to:
 * Allow setting of password restrictions on registration
 * Add out of the box support for ContentController::getMenu
 
+# 1.2.0
+
+* Update to index extension call to more logical naming
+* Minor tweak to account summary template
+
 # 2.0.0
 
 * SS4 support based on version 1.1.1
+
+# 2.1.0
+
+* Update to index extension call to more logical naming
+* Minor tweak to account summary template
