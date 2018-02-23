@@ -33,3 +33,4 @@ Minor update to:
 # 1.2.0
 
 * Update to index extension call to more logical naming
+* Minor tweak to account summary template
