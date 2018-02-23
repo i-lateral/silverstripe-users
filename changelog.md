@@ -34,3 +34,7 @@ Minor update to:
 
 * Update to index extension call to more logical naming
 * Minor tweak to account summary template
+
+# 1.2.1
+
+* Add additional extension hooks when edit form submitted

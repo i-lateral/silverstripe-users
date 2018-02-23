@@ -66,6 +66,8 @@ class Users_EditAccountForm extends Form
         $filter = array();
         $member = Member::get()->byID($data["ID"]);
 
+        $this->extend("onBeforeUpdate", $data);
+
         // Check that a mamber isn't trying to mess up another users profile
         if (Member::currentUserID() && $member->canEdit(Member::currentUser())) {
             // Save member
@@ -82,6 +84,8 @@ class Users_EditAccountForm extends Form
                 "warning"
             );
         }
+
+        $this->extend("onAfterUpdate", $data);
 
         return $this->controller->redirectBack();
     }
