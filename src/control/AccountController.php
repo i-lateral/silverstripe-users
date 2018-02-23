@@ -220,7 +220,7 @@ class AccountController extends Controller implements PermissionProvider
 
         // Allow users to add extra content sections to the
         // summary
-        $this->extend("updateContentSections", $sections);
+        $this->extend("updateIndexSections", $sections);
 
         $this->customise([
             "Title" => _t('Users.ProfileSummary', 'Profile Summary'),
