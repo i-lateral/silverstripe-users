@@ -29,3 +29,7 @@ Minor update to:
 
 * Allow setting of password restrictions on registration
 * Add out of the box support for ContentController::getMenu
+
+# 1.2.0
+
+* Update to index extension call to more logical naming
