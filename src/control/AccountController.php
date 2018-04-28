@@ -23,7 +23,9 @@ use ilateral\SilverStripe\Users\Forms\EditAccountForm;
 /**
  * Controller that is used to allow users to manage their accounts via
  * the front end of the site.
- *
+ * 
+ * @package Users
+ * @author  i-lateral <info@ilateral.co.uk>
  */
 class AccountController extends Controller implements PermissionProvider
 {
@@ -38,7 +40,7 @@ class AccountController extends Controller implements PermissionProvider
     /**
      * Allowed sub-URL's on this controller
      * 
-     * @var array
+     * @var    array
      * @config
      */
     private static $allowed_actions = [
@@ -96,7 +98,8 @@ class AccountController extends Controller implements PermissionProvider
     /**
      * Setter for member
      *
-     * @param Member $member
+     * @param Member $member A member to associate
+     * 
      * @return self
      */
     public function setMember(Member $member)
@@ -145,8 +148,9 @@ class AccountController extends Controller implements PermissionProvider
     /**
      * Get the link to this controller
      * 
-     * @param string $action
-     * @return string|null
+     * @param string $action The URL endpoint for this controller
+     * 
+     * @return string
      */
     public function Link($action = null)
     {
@@ -159,8 +163,9 @@ class AccountController extends Controller implements PermissionProvider
     /**
      * Get an absolute link to this controller
      *
-     * @param string $action
-     * @return string|null
+     * @param string $action The URL endpoint for this controller
+     * 
+     * @return string
      */
     public function AbsoluteLink($action = null)
     {
@@ -171,8 +176,9 @@ class AccountController extends Controller implements PermissionProvider
      * Get a relative (to the root url of the site) link to this
      * controller
      *
-     * @param string $action
-     * @return string|null
+     * @param string $action The URL endpoint for this controller 
+     * 
+     * @return string
      */
     public function RelativeLink($action = null)
     {
@@ -183,7 +189,9 @@ class AccountController extends Controller implements PermissionProvider
 
     /**
      * If content controller exists, return it's menu function
+     *
      * @param int $level Menu level to return.
+     * 
      * @return ArrayList
      */
     public function getMenu($level = 1)
@@ -194,6 +202,13 @@ class AccountController extends Controller implements PermissionProvider
         }
     }
 
+    /**
+     * Shortcut for getMenu
+     * 
+     * @param int $level Menu level to return.
+     * 
+     * @return ArrayList
+     */
     public function Menu($level)
     {
         return $this->getMenu();
@@ -210,26 +225,30 @@ class AccountController extends Controller implements PermissionProvider
         // Setup default profile summary sections
         $sections = ArrayList::create();
 
-        $sections->push(ArrayData::create([
-            "Title" => "",
-            "Content" => $this->renderWith(
-                "ilateral\\SilverStripe\\Users\\Includes\\ProfileSummary",
-                ["CurrentUser" => Security::getCurrentUser()]
-            )
-        ]));
+        $sections->push(ArrayData::create(
+            [
+                "Title" => "",
+                "Content" => $this->renderWith(
+                    "ilateral\\SilverStripe\\Users\\Includes\\ProfileSummary",
+                    ["CurrentUser" => Security::getCurrentUser()]
+                )
+            ]
+        ));
 
         // Allow users to add extra content sections to the
         // summary
         $this->extend("updateIndexSections", $sections);
 
-        $this->customise([
-            "Title" => _t('Users.ProfileSummary', 'Profile Summary'),
-            "MetaTitle" => _t('Users.ProfileSummary', 'Profile Summary'),
-            "Content" => $this->renderWith(
-                "ilateral\\SilverStripe\\Users\\Includes\\AccountSections",
-                ["Sections" => $sections]
-            )
-        ]);
+        $this->customise(
+            [
+                "Title" => _t('Users.ProfileSummary', 'Profile Summary'),
+                "MetaTitle" => _t('Users.ProfileSummary', 'Profile Summary'),
+                "Content" => $this->renderWith(
+                    "ilateral\\SilverStripe\\Users\\Includes\\AccountSections",
+                    ["Sections" => $sections]
+                )
+            ]
+        );
 
         $this->extend("onBeforeIndex");
 
@@ -250,11 +269,19 @@ class AccountController extends Controller implements PermissionProvider
             $form->loadDataFrom($member);
         }
 
-        $this->customise([
-            "Title" => _t("Users.EditAccountDetails", "Edit account details"),
-            "MetaTitle" => _t("Users.EditAccountDetails", "Edit account details"),
-            "Form"  => $form
-        ]);
+        $this->customise(
+            [
+                "Title" => _t(
+                    "Users.EditAccountDetails",
+                    "Edit account details"
+                ),
+                "MetaTitle" => _t(
+                    "Users.EditAccountDetails",
+                    "Edit account details"
+                ),
+                "Form"  => $form
+            ]
+        );
 
         $this->extend("onBeforeEdit");
 
@@ -283,16 +310,27 @@ class AccountController extends Controller implements PermissionProvider
         // Is password changed, set a session message.
         if($password_set && $password_set == 1) {
             $form->sessionMessage(
-                _t("Users.PasswordChangedSuccessfully","Password Changed Successfully"),
+                _t(
+                    "Users.PasswordChangedSuccessfully",
+                    "Password Changed Successfully"
+                ),
                 ValidationResult::TYPE_GOOD
             );
         }
 
-        $this->customise([
-            "Title" => _t("Security.ChangeYourPassword", "Change your password"),
-            "MetaTitle" => _t("Security.ChangeYourPassword", "Change your password"),
-            "Form"  => $form
-        ]);
+        $this->customise(
+            [
+                "Title" => _t(
+                    "Security.ChangeYourPassword",
+                    "Change your password"
+                ),
+                "MetaTitle" => _t(
+                    "Security.ChangeYourPassword",
+                    "Change your password"
+                ),
+                "Form"  => $form
+            ]
+        );
 
         $this->extend("onBeforeChangePassword");
 

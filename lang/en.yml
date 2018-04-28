@@ -10,6 +10,7 @@ en:
     DETAILSUPDATED: 'Account details updated'
     EDITDETAILS: 'Edit account details'
     EditAccountDetails: 'Edit account details'
+    FirstRegistered: 'First Registered'
     HELLO: Hi
     LOGIN: 'Log in'
     LOGOUT: Logout

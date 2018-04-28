@@ -29,6 +29,8 @@ use ilateral\SilverStripe\Users\Users;
  * This is done by adding verified users to the groups stipulated by the
  * $verification_groups config variable
  *
+ * @package Users
+ * @author  i-lateral <info@ilateral.co.uk>
  */
 class RegisterController extends Controller
 {
@@ -84,6 +86,7 @@ class RegisterController extends Controller
      * email from multiple locations
      *
      * @param $member Member object to send email to
+     * 
      * @return boolean
      */
     protected function send_verification_email(Member $member)
@@ -98,7 +101,8 @@ class RegisterController extends Controller
     /**
      * Get the link to this controller
      * 
-     * @param string $action
+     * @param string $action The URL endpoint for this controller
+     * 
      * @return string
      */
     public function Link($action = null)
@@ -112,8 +116,9 @@ class RegisterController extends Controller
     /**
      * Get an absolute link to this controller
      *
-     * @param string $action
-     * @return false|string
+     * @param string $action The URL endpoint for this controller
+     *
+     * @return string
      */
     public function AbsoluteLink($action = null)
     {
@@ -124,7 +129,8 @@ class RegisterController extends Controller
      * Get a relative (to the root url of the site) link to this
      * controller
      *
-     * @param string $action
+     * @param string $action The URL endpoint for this controller
+     *
      * @return string
      */
     public function RelativeLink($action = null)
@@ -136,7 +142,9 @@ class RegisterController extends Controller
 
     /**
      * If content controller exists, return it's menu function
+     *
      * @param int $level Menu level to return.
+     *
      * @return ArrayList
      */
     public function getMenu($level = 1)
@@ -147,6 +155,13 @@ class RegisterController extends Controller
         }
     }
 
+    /**
+     * Shortcut for getMenu
+     * 
+     * @param int $level Menu level to return.
+     * 
+     * @return ArrayList
+     */
     public function Menu($level)
     {
         return $this->getMenu();
@@ -318,7 +333,9 @@ class RegisterController extends Controller
      *    etc)
      *
      * @param array $data User submitted data
-     * @param Form $form Registration form
+     * @param Form  $form Registration form
+     * 
+     * @return SS_HTTPResponse
      */
     public function doRegister($data, $form)
     {

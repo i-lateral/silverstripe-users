@@ -15,14 +15,23 @@ use SilverStripe\Control\Email\Email;
 use ilateral\SilverStripe\Users\Users;
 use ilateral\SilverStripe\Users\Control\RegisterController;
 
+/**
+ * Overwrite Member object
+ *
+ * @package Users
+ * @author  i-lateral <info@ilateral.co.uk>
+ */
 class MemberExtension extends DataExtension
 {
     private static $db = array(
         "VerificationCode" => "Varchar(40)"
     );
 
-    private static $has_many = array();
-
+    /**
+     * Is the current member verified?
+     * 
+     * @return boolean
+     */
     public function isVerified()
     {
         return Permission::checkMember($this->owner, "USERS_VERIFIED");
@@ -32,7 +41,8 @@ class MemberExtension extends DataExtension
      * Register a new user account using the provided data
      * and then return the current member
      *
-     * @param array $data
+     * @param array $data Array of data to create member from
+     *
      * @return Member
      */
     public function Register($data)
@@ -51,9 +61,11 @@ class MemberExtension extends DataExtension
 
         // Add member to any groups that have been specified
         if (count(Users::config()->new_user_groups)) {
-            $groups = Group::get()->filter(array(
+            $groups = Group::get()->filter(
+                array(
                 "Code" => Users::config()->new_user_groups
-            ));
+                )
+            );
 
             foreach ($groups as $group) {
                 $group->Members()->add($this->owner);

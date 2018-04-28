@@ -5,6 +5,10 @@ SilverStripe\Security\Group:
   extensions:
     - ilateral\SilverStripe\Users\Extensions\GroupExtension
 SilverStripe\Security\Member:
+  required_fields:
+    - "FirstName"
+    - "Surname"
+    - "Email"
   extensions:
     - ilateral\SilverStripe\Users\Extensions\MemberExtension
 SilverStripe\Control\Controller:

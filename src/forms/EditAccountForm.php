@@ -13,25 +13,70 @@ use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
 use SilverStripe\ORM\ValidationResult;
+use SilverStripe\Core\Injector\Injector;
 
+/**
+ * Default form for editing Member details
+ *
+ * @package Users
+ * @author  i-lateral <info@ilateral.co.uk>
+ */
 class EditAccountForm extends Form
 {
 
+    /**
+     * These fields will be ignored by the `Users_EditAccountForm`
+     * when generating fields
+     * 
+     * @var array
+     */
+    private static $ignore_member_fields = array(
+        "LastVisited",
+        "FailedLoginCount",
+        "DateFormat",
+        "TimeFormat",
+        "VerificationCode",
+        "Password",
+        "HasConfiguredDashboard",
+        "URLSegment",
+        "BlogProfileSummary",
+        "BlogProfileImage"
+    );
+
+    /**
+     * Setup this form
+     * 
+     * @param Controller $controller Current Controller
+     * @param string     $name       Name of this form
+     * 
+     * @return void
+     */
     public function __construct($controller, $name = "Users_EditAccountForm")
     {
-        $fields = FieldList::create(
-            HiddenField::create("ID"),
-            TextField::create(
-                "FirstName",
-                _t('Member.FIRSTNAME', "First Name")
-            ),
-            TextField::create(
-                "Surname",
-                _t('Member.SURNAME', "Surname")
-            ),
-            EmailField::create(
-                "Email",
-                _t("Member.EMAIL", "Email")
+        $member = Injector::inst()->get(Member::class);
+
+        $hidden_fields = array_merge(
+            $member->config()->hidden_fields,
+            static::config()->ignore_member_fields
+        );
+
+        $fields = $member->getFrontEndFields();
+
+        // Remove all "hidden fields"
+        foreach ($hidden_fields as $field_name) {
+            $fields->removeByName($field_name);
+        }
+
+        // Add the current member ID
+        $fields->add(HiddenField::create("ID"));
+
+        // Switch locale field
+        $fields->replaceField(
+            'Locale',
+            DropdownField::create(
+                "Locale",
+                $member->fieldLabel("Locale"),
+                i18n::get_existing_translations()
             )
         );
 
@@ -51,11 +96,9 @@ class EditAccountForm extends Form
 
         $this->extend("updateFormActions", $actions);
 
-        $required = RequiredFields::create([
-            "FirstName",
-            "Surname",
-            "Email"
-        ]);
+        $required = RequiredFields::create(
+            $member->config()->required_fields
+        );
 
         $this->extend("updateRequiredFields", $required);
 
@@ -74,6 +117,8 @@ class EditAccountForm extends Form
      * Register a new member
      *
      * @param array $data User submitted data
+     * 
+     * @return SS_HTTPResponse
      */
     public function doUpdate($data)
     {
@@ -85,14 +130,21 @@ class EditAccountForm extends Form
         
         // Check that a member isn't trying to mess up another users profile
         if (!empty($curr) && $member->canEdit($curr)) {
-            // Save member
-            $this->saveInto($member);
-            $member->write();
+            try {
+                // Save member
+                $this->saveInto($member);
+                $member->write();
 
-            $this->sessionMessage(
-                _t("Users.DETAILSUPDATED", "Account details updated"),
-                ValidationResult::TYPE_GOOD
-            );
+                $this->sessionMessage(
+                    _t("Users.DETAILSUPDATED", "Account details updated"),
+                    ValidationResult::TYPE_GOOD
+                );
+            } catch (Exception $e) {
+                $this->sessionMessage(
+                    $e->getMessage(),
+                    ValidationResult::TYPE_ERROR
+                );
+            }
         } else {
             $this->sessionMessage(
                 _t("Users.CANNOTEDIT", "You cannot edit this account"),

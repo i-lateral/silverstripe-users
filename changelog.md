@@ -39,6 +39,11 @@ Minor update to:
 
 * Add additional extension hooks when edit form submitted
 
+# 1.3.0
+
+* Switch to using frontend form fields to generate the "Edit Account Details" form
+* Add better error handling on edit account submission
+
 # 2.0.0
 
 * SS4 support based on version 1.1.1
@@ -48,3 +53,8 @@ Minor update to:
 # 2.0.1
 
 * Add additional extension hooks when edit form submitted
+
+# 2.1.0
+
+* Switch to using frontend form fields to generate the "Edit Account Details" form
+* Add better error handling on edit account submission

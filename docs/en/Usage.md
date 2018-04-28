@@ -49,4 +49,39 @@ This module makes `$UserAccountNav` available to all your
 controllers. You can include this variable in your templates and it 
 will add an account navigation menu.
 
-If you wish to change the styling of this menu, simply edit the `Users_AccountNav.ss` template include.
+If you wish to change the styling of this menu, simply edit the `Users_AccountNav.ss`
+template include.
+
+## Adding/Removing fields to the Edit Account form
+
+By default, this module generates an "Edit your account" view via:
+
+        http://yoursite.com/users/account
+
+This view uses an instance of `Users_EditAccountForm` to generate the edit form.
+
+`Users_EditAccountForm` uses `Member::getFrontEndFields()` to generate the fieldlist,
+it also uses the `Member.hidden_fields` config variable, as well as it's own
+`ignore_member_fields` config variable, to remove fields from the EditForm.
+
+If you want to remove additional fields from this form (for example `Locale`), you can
+add the following to your config.yml:
+
+```yml
+Users_EditAccountForm:
+  ignore_member_fields:
+    - "Locale"
+```
+
+### Updating Required Fields
+
+This module uses `Member.required_fields` config variable to determine required fields.
+If you added the Field `PhoneNumber` and wanted to make it required, you could do as below:
+
+```yml
+Member:
+  db:
+    - "PhoneNumber"
+  required_fields:
+    - "PhoneNumber"
+```

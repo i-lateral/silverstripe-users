@@ -9,6 +9,9 @@ use SilverStripe\ORM\DB;
 
 /**
  * Overwrite group object so we can setup some more default groups
+ *
+ * @package Users
+ * @author  i-lateral <info@ilateral.co.uk>
  */
 class GroupExtension extends DataExtension
 {
