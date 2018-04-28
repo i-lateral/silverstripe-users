@@ -10,7 +10,7 @@
                 </a>
             </li>
             <li class="logout">
-                <a href="{$BaseHref}Security/logout?BackURL={$BaseHref}">
+                <a href="{$LogoutURL}">
                     <% _t("Users.LOGOUT", "Logout") %>
                 </a>
             </li>
