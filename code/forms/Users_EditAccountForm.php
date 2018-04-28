@@ -95,14 +95,21 @@ class Users_EditAccountForm extends Form
 
         // Check that a member isn't trying to mess up another users profile
         if (Member::currentUserID() && $member->canEdit(Member::currentUser())) {
-            // Save member
-            $this->saveInto($member);
-            $member->write();
-            
-            $this->sessionMessage(
-                _t("Users.DETAILSUPDATED", "Account details updated"),
-                "success"
-            );
+            try {
+                // Save member
+                $this->saveInto($member);
+                $member->write();
+                
+                $this->sessionMessage(
+                    _t("Users.DETAILSUPDATED", "Account details updated"),
+                    "success"
+                );
+            } catch (Exception $e) {
+                $this->sessionMessage(
+                    $e->getMessage(),
+                    "warning"
+                );
+            }
         } else {
             $this->sessionMessage(
                 _t("Users.CANNOTEDIT", "You cannot edit this account"),
