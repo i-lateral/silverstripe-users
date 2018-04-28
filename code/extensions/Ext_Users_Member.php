@@ -1,13 +1,22 @@
 <?php
 
+/**
+ * Overwrite Member object
+ *
+ * @package Users
+ * @author  i-lateral <info@ilateral.co.uk>
+ */
 class Ext_Users_Member extends DataExtension
 {
     private static $db = array(
         "VerificationCode" => "Varchar(40)"
     );
 
-    private static $has_many = array();
-
+    /**
+     * Is the current member verified?
+     * 
+     * @return boolean
+     */
     public function isVerified()
     {
         return Permission::checkMember($this->owner, "USERS_VERIFIED");
@@ -17,7 +26,8 @@ class Ext_Users_Member extends DataExtension
      * Register a new user account using the provided data
      * and then return the current member
      *
-     * @param array $data
+     * @param array $data Array of data to create member from
+     *
      * @return Member
      */
     public function Register($data)
@@ -36,9 +46,11 @@ class Ext_Users_Member extends DataExtension
 
         // Add member to any groups that have been specified
         if (count(Users::config()->new_user_groups)) {
-            $groups = Group::get()->filter(array(
+            $groups = Group::get()->filter(
+                array(
                 "Code" => Users::config()->new_user_groups
-            ));
+                )
+            );
 
             foreach ($groups as $group) {
                 $group->Members()->add($this->owner);
@@ -82,13 +94,17 @@ class Ext_Users_Member extends DataExtension
                 ->setTo($this->owner->Email)
                 ->setSubject($subject)
                 ->setTemplate('UsersAccountVerification')
-                ->populateTemplate(ArrayData::create(array(
-                    "Link" => Controller::join_links(
-                        $controller->AbsoluteLink("verify"),
-                        $this->owner->ID,
-                        $this->owner->VerificationCode
+                ->populateTemplate(
+                    ArrayData::create(
+                        array(
+                        "Link" => Controller::join_links(
+                            $controller->AbsoluteLink("verify"),
+                            $this->owner->ID,
+                            $this->owner->VerificationCode
+                        )
+                        )
                     )
-                )));
+                );
 
             $email->send();
 

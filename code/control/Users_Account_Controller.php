@@ -3,7 +3,9 @@
 /**
  * Controller that is used to allow users to manage their accounts via
  * the front end of the site.
- *
+ * 
+ * @package Users
+ * @author  i-lateral <info@ilateral.co.uk>
  */
 class Users_Account_Controller extends Controller implements PermissionProvider
 {
@@ -18,7 +20,7 @@ class Users_Account_Controller extends Controller implements PermissionProvider
     /**
      * Allowed sub-URL's on this controller
      * 
-     * @var array
+     * @var    array
      * @config
      */
     private static $allowed_actions = array(
@@ -48,7 +50,8 @@ class Users_Account_Controller extends Controller implements PermissionProvider
     /**
      * Setter for member
      *
-     * @param Member $member
+     * @param Member $member A member to associate
+     * 
      * @return self
      */
     public function setMember(Member $member)
@@ -97,8 +100,9 @@ class Users_Account_Controller extends Controller implements PermissionProvider
     /**
      * Get the link to this controller
      * 
-     * @param string $action
-     * @return string|null
+     * @param string $action The URL endpoint for this controller
+     * 
+     * @return string
      */
     public function Link($action = null)
     {
@@ -111,8 +115,9 @@ class Users_Account_Controller extends Controller implements PermissionProvider
     /**
      * Get an absolute link to this controller
      *
-     * @param string $action
-     * @return string|null
+     * @param string $action The URL endpoint for this controller
+     * 
+     * @return string
      */
     public function AbsoluteLink($action = null)
     {
@@ -123,8 +128,9 @@ class Users_Account_Controller extends Controller implements PermissionProvider
      * Get a relative (to the root url of the site) link to this
      * controller
      *
-     * @param string $action
-     * @return string|null
+     * @param string $action The URL endpoint for this controller 
+     * 
+     * @return string
      */
     public function RelativeLink($action = null)
     {
@@ -135,7 +141,9 @@ class Users_Account_Controller extends Controller implements PermissionProvider
 
     /**
      * If content controller exists, return it's menu function
+     *
      * @param int $level Menu level to return.
+     * 
      * @return ArrayList
      */
     public function getMenu($level = 1)
@@ -146,6 +154,13 @@ class Users_Account_Controller extends Controller implements PermissionProvider
         }
     }
 
+    /**
+     * Shortcut for getMenu
+     * 
+     * @param int $level Menu level to return.
+     * 
+     * @return ArrayList
+     */
     public function Menu($level)
     {
         return $this->getMenu();
@@ -153,40 +168,49 @@ class Users_Account_Controller extends Controller implements PermissionProvider
 
     /**
      * Display the currently outstanding orders for the current user
-     *
+     * 
+     * @return HTMLText
      */
     public function index()
     {
         // Setup default profile summary sections
         $sections = ArrayList::create();
 
-        $sections->push(ArrayData::create(array(
-            "Title" => "",
-            "Content" => $this->renderWith(
-                "UsersProfileSummary",
-                array("CurrentUser" => Member::currentUser())
+        $sections->push(
+            ArrayData::create(
+                array(
+                "Title" => "",
+                "Content" => $this->renderWith(
+                    "UsersProfileSummary",
+                    array("CurrentUser" => Member::currentUser())
+                )
+                )
             )
-        )));
+        );
 
         // Allow users to add extra content sections to the
         // summary
         $this->extend("updateIndexSections", $sections);
 
-        $this->customise(array(
+        $this->customise(
+            array(
             "Title" => _t('Users.ProfileSummary', 'Profile Summary'),
             "MetaTitle" => _t('Users.ProfileSummary', 'Profile Summary'),
             "Content" => $this->renderWith(
                 "UsersAccountSections",
                 array("Sections" => $sections)
             )
-        ));
+            )
+        );
 
         $this->extend("onBeforeIndex");
 
-        return $this->renderWith(array(
+        return $this->renderWith(
+            array(
             "UserAccount",
             "Page"
-        ));
+            )
+        );
     }
 
     public function edit()
@@ -198,19 +222,23 @@ class Users_Account_Controller extends Controller implements PermissionProvider
             $form->loadDataFrom($member);
         }
 
-        $this->customise(array(
+        $this->customise(
+            array(
             "Title" => _t("Users.EditAccountDetails", "Edit account details"),
             "MetaTitle" => _t("Users.EditAccountDetails", "Edit account details"),
             "Form"  => $form
-        ));
+            )
+        );
 
         $this->extend("onBeforeEdit");
 
-        return $this->renderWith(array(
+        return $this->renderWith(
+            array(
             "UserAccount_edit",
             "UserAccount",
             "Page"
-        ));
+            )
+        );
     }
 
     public function changepassword()
@@ -229,24 +257,28 @@ class Users_Account_Controller extends Controller implements PermissionProvider
         $password_set = $this->request->getVar("s");
         if($password_set && $password_set == 1) {
             $form->sessionMessage(
-                _t("Users.PasswordChangedSuccessfully","Password Changed Successfully"),
+                _t("Users.PasswordChangedSuccessfully", "Password Changed Successfully"),
                 "good"
             );
         }
 
-        $this->customise(array(
+        $this->customise(
+            array(
             "Title" => _t("Security.ChangeYourPassword", "Change your password"),
             "MetaTitle" => _t("Security.ChangeYourPassword", "Change your password"),
             "Form"  => $form
-        ));
+            )
+        );
 
         $this->extend("onBeforeChangePassword");
 
-        return $this->renderWith(array(
+        return $this->renderWith(
+            array(
             "UserAccount_changepassword",
             "UserAccount",
             "Page"
-        ));
+            )
+        );
     }
 
     /**
@@ -306,26 +338,38 @@ class Users_Account_Controller extends Controller implements PermissionProvider
         
         $curr_action = $this->request->param("Action");
 
-        $menu->add(ArrayData::create(array(
-            "ID"    => 0,
-            "Title" => _t('Users.PROFILESUMMARY', "Profile Summary"),
-            "Link"  => $this->Link(),
-            "LinkingMode" => (!$curr_action) ? "current" : "link"
-        )));
+        $menu->add(
+            ArrayData::create(
+                array(
+                "ID"    => 0,
+                "Title" => _t('Users.PROFILESUMMARY', "Profile Summary"),
+                "Link"  => $this->Link(),
+                "LinkingMode" => (!$curr_action) ? "current" : "link"
+                )
+            )
+        );
 
-        $menu->add(ArrayData::create(array(
-            "ID"    => 10,
-            "Title" => _t('Users.EDITDETAILS', "Edit account details"),
-            "Link"  => $this->Link("edit"),
-            "LinkingMode" => ($curr_action == "edit") ? "current" : "link"
-        )));
+        $menu->add(
+            ArrayData::create(
+                array(
+                "ID"    => 10,
+                "Title" => _t('Users.EDITDETAILS', "Edit account details"),
+                "Link"  => $this->Link("edit"),
+                "LinkingMode" => ($curr_action == "edit") ? "current" : "link"
+                )
+            )
+        );
 
-        $menu->add(ArrayData::create(array(
-            "ID"    => 30,
-            "Title" => _t('Users.CHANGEPASSWORD', "Change password"),
-            "Link"  => $this->Link("changepassword"),
-            "LinkingMode" => ($curr_action == "changepassword") ? "current" : "link"
-        )));
+        $menu->add(
+            ArrayData::create(
+                array(
+                "ID"    => 30,
+                "Title" => _t('Users.CHANGEPASSWORD', "Change password"),
+                "Link"  => $this->Link("changepassword"),
+                "LinkingMode" => ($curr_action == "changepassword") ? "current" : "link"
+                )
+            )
+        );
 
         $this->extend("updateAccountMenu", $menu);
 

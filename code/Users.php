@@ -5,45 +5,45 @@
  * config, but will probably be extended in future to provide additional
  * functionality.
  *
- * @author i-lateral (http://www.i-lateral.com)
- * @package users
+ * @package Users
+ * @author  i-lateral <info@ilateral.co.uk>
  */
 class Users extends Object
 {
 
-	/**
-	 * Minimum character length of the password required
+    /**
+     * Minimum character length of the password required
      * on registration/account editing
-	 *
-	 * @var int
+     *
+     * @var    int
      * @config
-	 */
-	private static $password_min_length = 6;
+     */
+    private static $password_min_length = 6;
 
-	/**
-	 * Maximum character length of the password required
+    /**
+     * Maximum character length of the password required
      * on registration/account editing
-	 *
-	 * @var int
+     *
+     * @var    int
      * @config
-	 */
-	private static $password_max_length = 16;
+     */
+    private static $password_max_length = 16;
 
-	/**
-	 * Enforces strong password (at least one digit and one alphanumeric
-	 * character) on registration/account editing
-	 *
-	 * @var boolean
+    /**
+     * Enforces strong password (at least one digit and one alphanumeric
+     * character) on registration/account editing
+     *
+     * @var    boolean
      * @config
-	 */
-	private static $password_require_strong = false;
+     */
+    private static $password_require_strong = false;
 
     /**
      * Stipulate if a user requires verification. NOTE this does not
      * actually deny the user the ability to login, it only alerts them
      * that they need validiation
      *
-     * @var Boolean
+     * @var    boolean
      * @config
      */
     private static $require_verification = true;
@@ -52,7 +52,7 @@ class Users extends Object
      * Stipulate whether to send a verification email to users after
      * registration
      *
-     * @var Boolean
+     * @var    boolean
      * @config
      */
     private static $send_verification_email = false;
@@ -61,7 +61,7 @@ class Users extends Object
      * Stipulate the sender address for emails sent from this module. If
      * not set, use the default @Email.admin_email instead.
      *
-     * @var strong
+     * @var    string
      * @config
      */
     private static $send_email_from;
@@ -69,7 +69,7 @@ class Users extends Object
     /**
      * Auto login users after registration
      *
-     * @var Boolean
+     * @var    boolean
      * @config
      */
     private static $login_after_register = true;
@@ -78,7 +78,7 @@ class Users extends Object
      * Add new users to the following groups. This is a list of group codes.
      * Adding a new code will add the user to this group
      *
-     * @var array
+     * @var    array
      * @config
      */
     private static $new_user_groups = array(
@@ -86,22 +86,12 @@ class Users extends Object
     );
 
     /**
-     * Add a group to the list of groups a new user is added to on
-     * registering.
-     *
-     * @param string Group code that will be used
-     */
-    public static function addNewUserGroup($code)
-    {
-        Deprecation::notice("1.3", "addNewUserGroup depreciated, use global config instead");
-        self::config()->new_user_groups[] = $code;
-    }
-
-    /**
      * Remove a group from the list of groups a new user is added to on
      * registering.
      *
-     * @param string Group code that will be used
+     * @param string $code Group code that will be used
+     * 
+     * @return void
      */
     public static function removeNewUserGroup($code)
     {
@@ -114,7 +104,7 @@ class Users extends Object
      * Groups a user will be added to when verified. This should be an
      * array of group "codes", NOT names or ID's
      *
-     * @var array
+     * @var    array
      * @config
      */
     private static $verification_groups = array(
@@ -122,22 +112,12 @@ class Users extends Object
     );
 
     /**
-     * Add a group to the list of groups a new user is added to on
-     * registering.
-     *
-     * @param string Group code that will be used
-     */
-    public static function addVerificationGroup($code)
-    {
-        Deprecation::notice("1.3", "addVerificationGroup depreciated, use global config instead");
-        self::config()->verification_groups[] = $code;
-    }
-
-    /**
      * Remove a group from the list of groups a new user is added to on
      * registering.
      *
-     * @param string Group code that will be used
+     * @param string $code Group code that will be used
+     * 
+     * @return void
      */
     public static function removeVerificationGroup($code)
     {

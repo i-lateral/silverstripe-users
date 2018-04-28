@@ -3,7 +3,8 @@
  * Extension for Controller that provide methods such as member management
  * interface to templates
  *
- * @package users
+ * @package Users
+ * @author  i-lateral <info@ilateral.co.uk>
  */
 class Ext_Users_Controller extends Extension
 {

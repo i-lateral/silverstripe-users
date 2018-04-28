@@ -1,11 +1,19 @@
 <?php
 
+/**
+ * Default form for editing Member details
+ *
+ * @package Users
+ * @author  i-lateral <info@ilateral.co.uk>
+ */
 class Users_EditAccountForm extends Form
 {
 
     /**
      * These fields will be ignored by the `Users_EditAccountForm`
      * when generating fields
+     * 
+     * @var array
      */
     private static $ignore_member_fields = array(
         "LastVisited",
@@ -20,6 +28,14 @@ class Users_EditAccountForm extends Form
         "BlogProfileImage"
     );
 
+    /**
+     * Setup this form
+     * 
+     * @param Controller $controller Current Controller
+     * @param string     $name       Name of this form
+     * 
+     * @return void
+     */
     public function __construct($controller, $name = "Users_EditAccountForm")
     {
         $member = Member::singleton();
@@ -85,6 +101,8 @@ class Users_EditAccountForm extends Form
      * Register a new member
      *
      * @param array $data User submitted data
+     * 
+     * @return SS_HTTPResponse
      */
     public function doUpdate($data)
     {

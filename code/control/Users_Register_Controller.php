@@ -10,6 +10,8 @@
  * This is done by adding verified users to the groups stipulated by the
  * $verification_groups config variable
  *
+ * @package Users
+ * @author  i-lateral <info@ilateral.co.uk>
  */
 class Users_Register_Controller extends Controller
 {
@@ -38,6 +40,7 @@ class Users_Register_Controller extends Controller
      * email from multiple locations
      *
      * @param $member Member object to send email to
+     * 
      * @return boolean
      */
     protected function send_verification_email(Member $member)
@@ -52,7 +55,8 @@ class Users_Register_Controller extends Controller
     /**
      * Get the link to this controller
      * 
-     * @param string $action
+     * @param string $action The URL endpoint for this controller
+     * 
      * @return string
      */
     public function Link($action = null)
@@ -66,8 +70,9 @@ class Users_Register_Controller extends Controller
     /**
      * Get an absolute link to this controller
      *
-     * @param string $action
-     * @return false|string
+     * @param string $action The URL endpoint for this controller
+     *
+     * @return string
      */
     public function AbsoluteLink($action = null)
     {
@@ -78,7 +83,8 @@ class Users_Register_Controller extends Controller
      * Get a relative (to the root url of the site) link to this
      * controller
      *
-     * @param string $action
+     * @param string $action The URL endpoint for this controller
+     *
      * @return string
      */
     public function RelativeLink($action = null)
@@ -90,7 +96,9 @@ class Users_Register_Controller extends Controller
 
     /**
      * If content controller exists, return it's menu function
+     *
      * @param int $level Menu level to return.
+     *
      * @return ArrayList
      */
     public function getMenu($level = 1)
@@ -101,6 +109,13 @@ class Users_Register_Controller extends Controller
         }
     }
 
+    /**
+     * Shortcut for getMenu
+     * 
+     * @param int $level Menu level to return.
+     * 
+     * @return ArrayList
+     */
     public function Menu($level)
     {
         return $this->getMenu();
@@ -109,24 +124,29 @@ class Users_Register_Controller extends Controller
     /**
      * Default action this controller will deal with
      *
-     * @param SS_HTTPRequest $request
+     * @param  SS_HTTPRequest $request Current request
+     *
      * @return HTMLText
      */
     public function index(SS_HTTPRequest $request)
     {
-        $this->customise(array(
+        $this->customise(
+            array(
             'Title'     => _t('Users.Register', 'Register'),
             'MetaTitle' => _t('Users.Register', 'Register'),
             'Form'      => $this->RegisterForm(),
-        ));
+            )
+        );
 
         $this->extend("updateIndexAction");
 
-        return $this->renderWith(array(
+        return $this->renderWith(
+            array(
             "Users_Register",
             "Users",
             "Page"
-        ));
+            )
+        );
     }
 
 
@@ -134,7 +154,8 @@ class Users_Register_Controller extends Controller
      * Send a verification email to the user provided (if verification
      * emails are enabled and account is not already verified)
      *
-     * @param SS_HTTPRequest $request
+     * @param SS_HTTPRequest $request Current request
+     * 
      * @return HTMLText
      */
     public function sendverification(SS_HTTPRequest $request)
@@ -156,31 +177,35 @@ class Users_Register_Controller extends Controller
             $sent = $this->send_verification_email($member);
         }
 
-        $this->customise(array(
-            "Title" => _t('Users.AccountVerification','Account Verification'),
-            "MetaTitle" => _t('Users.AccountVerification','Account Verification'),
+        $this->customise(
+            array(
+            "Title" => _t('Users.AccountVerification', 'Account Verification'),
+            "MetaTitle" => _t('Users.AccountVerification', 'Account Verification'),
             "Content" => $this->renderWith(
                 "UsersSendVerificationContent",
                 array("Sent" => $sent)
             ),
             "Sent" => $sent
-        ));
+            )
+        );
 
         $this->extend("updateSendVerificationAction");
 
-        return $this->renderWith(array(
+        return $this->renderWith(
+            array(
             "Users_Register_sendverification",
             "Users",
             "Page"
-        ));
+            )
+        );
     }
-
 
     /**
      * Verify the provided user (ID) using the verification code (Other
      * ID) provided
      *
-     * @param SS_HTTPRequest $request
+     * @param SS_HTTPRequest $request Current Request
+     *
      * @return HTMLText
      */
     public function verify(SS_HTTPRequest $request)
@@ -204,23 +229,27 @@ class Users_Register_Controller extends Controller
             }
         }
 
-        $this->customise(array(
-            "Title" => _t('Users.AccountVerification','Account Verification'),
-            "MetaTitle" => _t('Users.AccountVerification','Account Verification'),
+        $this->customise(
+            array(
+            "Title" => _t('Users.AccountVerification', 'Account Verification'),
+            "MetaTitle" => _t('Users.AccountVerification', 'Account Verification'),
             "Content" => $this->renderWith(
                 "UsersVerifyContent",
                 array("Verify" => $verify)
             ),
             "Verify" => $verify
-        ));
+            )
+        );
 
         $this->extend("onAfterVerify", $member);
 
-        return $this->renderWith(array(
+        return $this->renderWith(
+            array(
             "Users_Register_verify",
             "Users",
             "Page"
-        ));
+            )
+        );
     }
 
     /**
@@ -258,12 +287,14 @@ class Users_Register_Controller extends Controller
         );
 
         // Setup required fields
-        $required = new RequiredFields(array(
+        $required = new RequiredFields(
+            array(
             "FirstName",
             "Surname",
             "Email",
             "Password"
-        ));
+            )
+        );
 
         $form = Form::create(
             $this,
@@ -297,7 +328,9 @@ class Users_Register_Controller extends Controller
      *    etc)
      *
      * @param array $data User submitted data
-     * @param Form $form Registration form
+     * @param Form  $form Registration form
+     * 
+     * @return SS_HTTPResponse
      */
     public function doRegister($data, $form)
     {
