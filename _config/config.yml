@@ -2,9 +2,12 @@ Group:
   extensions:
     - Ext_Users_Group
 Member:
+  required_fields:
+    - "FirstName"
+    - "Surname"
+    - "Email"
   extensions:
     - Ext_Users_Member
 Controller:
   extensions:
     - Ext_Users_Controller
-

@@ -3,21 +3,48 @@
 class Users_EditAccountForm extends Form
 {
 
+    /**
+     * These fields will be ignored by the `Users_EditAccountForm`
+     * when generating fields
+     */
+    private static $ignore_member_fields = array(
+        "LastVisited",
+        "FailedLoginCount",
+        "DateFormat",
+        "TimeFormat",
+        "VerificationCode",
+        "Password",
+        "HasConfiguredDashboard",
+        "URLSegment",
+        "BlogProfileSummary",
+        "BlogProfileImage"
+    );
+
     public function __construct($controller, $name = "Users_EditAccountForm")
     {
-        $fields = new FieldList(
-            HiddenField::create("ID"),
-            TextField::create(
-                "FirstName",
-                _t('Member.FIRSTNAME', "First Name")
-            ),
-            TextField::create(
-                "Surname",
-                _t('Member.SURNAME', "Surname")
-            ),
-            EmailField::create(
-                "Email",
-                _t("Member.EMAIL", "Email")
+        $member = Member::singleton();
+        $hidden_fields = array_merge(
+            $member->config()->hidden_fields,
+            static::config()->ignore_member_fields
+        );
+
+        $fields = $member->getFrontEndFields();
+
+        // Remove all "hidden fields"
+        foreach ($hidden_fields as $field_name) {
+            $fields->removeByName($field_name);
+        }
+
+        // Add the current member ID
+        $fields->add(HiddenField::create("ID"));
+
+        // Switch locale field
+        $fields->replaceField(
+            'Locale',
+            DropdownField::create(
+                "Locale",
+                $member->fieldLabel("Locale"),
+                i18n::get_existing_translations()
             )
         );
 
@@ -37,11 +64,9 @@ class Users_EditAccountForm extends Form
 
         $this->extend("updateFormActions", $actions);
 
-        $required = new RequiredFields(array(
-            "FirstName",
-            "Surname",
-            "Email"
-        ));
+        $required = new RequiredFields(
+            $member->config()->required_fields
+        );
 
         $this->extend("updateRequiredFields", $required);
 
@@ -68,7 +93,7 @@ class Users_EditAccountForm extends Form
 
         $this->extend("onBeforeUpdate", $data);
 
-        // Check that a mamber isn't trying to mess up another users profile
+        // Check that a member isn't trying to mess up another users profile
         if (Member::currentUserID() && $member->canEdit(Member::currentUser())) {
             // Save member
             $this->saveInto($member);
