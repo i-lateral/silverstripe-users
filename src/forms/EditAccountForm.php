@@ -2,16 +2,19 @@
 
 namespace ilateral\SilverStripe\Users\Forms;
 
+use Exception;
+use SilverStripe\i18n\i18n;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\TextField;
-use SilverStripe\Forms\EmailField;
-use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Security\Member;
+use SilverStripe\Forms\EmailField;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\HiddenField;
 use SilverStripe\Security\Security;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\RequiredFields;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Core\Injector\Injector;
 
@@ -76,7 +79,7 @@ class EditAccountForm extends Form
             DropdownField::create(
                 "Locale",
                 $member->fieldLabel("Locale"),
-                i18n::get_existing_translations()
+                i18n::getSources()->getKnownLocales()
             )
         );
 
