@@ -2,23 +2,26 @@
 
 namespace ilateral\SilverStripe\Users\Control;
 
-use SilverStripe\Control\Controller;
-use SilverStripe\Control\Director;
-use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Security\PermissionProvider;
-use SilverStripe\Security\Member;
-use SilverStripe\Security\Security;
-use SilverStripe\Security\Permission;
-use SilverStripe\Security\MemberAuthenticator\MemberAuthenticator;
-use SilverStripe\Security\MemberAuthenticator\ChangePasswordForm;
-use SilverStripe\Security\MemberAuthenticator\ChangePasswordHandler;
-use SilverStripe\ORM\ValidationResult;
+use SilverStripe\i18n\i18n;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\View\SSViewer;
 use SilverStripe\View\ArrayData;
+use SilverStripe\Security\Member;
+use SilverStripe\Control\Director;
+use SilverStripe\Security\Security;
+use SilverStripe\Control\Controller;
 use SilverStripe\Forms\LiteralField;
-use SilverStripe\CMS\Controllers\ContentController;
+use SilverStripe\Security\Permission;
 use ilateral\SilverStripe\Users\Users;
+use SilverStripe\ORM\ValidationResult;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Subsites\Model\Subsite;
+use SilverStripe\Security\PermissionProvider;
+use SilverStripe\CMS\Controllers\ContentController;
 use ilateral\SilverStripe\Users\Forms\EditAccountForm;
+use SilverStripe\Security\MemberAuthenticator\ChangePasswordForm;
+use SilverStripe\Security\MemberAuthenticator\MemberAuthenticator;
+use SilverStripe\Security\MemberAuthenticator\ChangePasswordHandler;
 
 /**
  * Controller that is used to allow users to manage their accounts via
@@ -142,6 +145,19 @@ class AccountController extends Controller implements PermissionProvider
 
         if ($member instanceof Member) {
             $this->member = $member;
+        }
+
+        # Check for subsites and add support
+        if (class_exists(Subsite::class)) {
+            $subsite = Subsite::currentSubsite();
+
+            if ($subsite && $subsite->Theme) {
+                SSViewer::add_themes([$subsite->Theme]);
+            }
+
+            if ($subsite && i18n::getData()->validate($subsite->Language)) {
+                i18n::set_locale($subsite->Language);
+            }
         }
     }
 

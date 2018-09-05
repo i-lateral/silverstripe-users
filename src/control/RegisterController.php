@@ -2,22 +2,25 @@
 
 namespace ilateral\SilverStripe\Users\Control;
 
-use SilverStripe\Control\Controller;
-use SilverStripe\Control\Director;
-use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Security\Member;
-use SilverStripe\Security\Security;
-use SilverStripe\Security\Group;
+use SilverStripe\i18n\i18n;
 use SilverStripe\Forms\Form;
+use SilverStripe\View\SSViewer;
+use SilverStripe\Security\Group;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Security\Member;
+use SilverStripe\Control\Director;
 use SilverStripe\Forms\EmailField;
 use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\ConfirmedPasswordField;
-use SilverStripe\ORM\ValidationResult;
-use SilverStripe\CMS\Controllers\ContentController;
+use SilverStripe\Security\Security;
+use SilverStripe\Control\Controller;
 use ilateral\SilverStripe\Users\Users;
+use SilverStripe\Forms\RequiredFields;
+use SilverStripe\ORM\ValidationResult;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Subsites\Model\Subsite;
+use SilverStripe\Forms\ConfirmedPasswordField;
+use SilverStripe\CMS\Controllers\ContentController;
 
 /**
  * Base controller class for users to register. Provides extension hooks to
@@ -80,6 +83,29 @@ class RegisterController extends Controller
             'Page'
         ]
     ];
+
+    /**
+     * Perorm setup when this controller is initialised
+     *
+     * @return void
+     */
+    public function init()
+    {
+        parent::init();
+
+        # Check for subsites and add support
+        if (class_exists(Subsite::class)) {
+            $subsite = Subsite::currentSubsite();
+
+            if ($subsite && $subsite->Theme) {
+                SSViewer::add_themes([$subsite->Theme]);
+            }
+
+            if ($subsite && i18n::getData()->validate($subsite->Language)) {
+                i18n::set_locale($subsite->Language);
+            }
+        }
+    }
 
     /**
      * Internal function designed to allow us to send a verification
