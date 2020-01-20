@@ -8,7 +8,7 @@
  * @package Users
  * @author  i-lateral <info@ilateral.co.uk>
  */
-class Users extends Object
+class Users extends SS_Object
 {
 
     /**
