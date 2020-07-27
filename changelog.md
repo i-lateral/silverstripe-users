@@ -58,3 +58,7 @@ Minor update to:
 
 * Switch to using frontend form fields to generate the "Edit Account Details" form
 * Add better error handling on edit account submission
+
+# 2.2.0
+
+* Update translations

@@ -311,32 +311,42 @@ class RegisterController extends Controller
 
         $form = Form::create(
             $this,
-            "RegisterForm",
+            'RegisterForm',
             FieldList::create(
-                TextField::create("FirstName"),
-                TextField::create("Surname"),
-                EmailField::create("Email"),
-                $password_field = ConfirmedPasswordField::create("Password")
+                TextField::create(
+                    'FirstName',
+                    _t('SilverStripe\Security\Member.FIRSTNAME', 'First Name')
+                ),
+                TextField::create(
+                    'Surname',
+                    _t('SilverStripe\Security\Member.SURNAME', 'Surname')
+                ),
+                EmailField::create(
+                    'Email',
+                    _t('SilverStripe\Security\Member.EMAIL', 'Email')
+                ),
+                $password_field = ConfirmedPasswordField::create('Password')
             ),
             FieldList::create(
-                FormAction::create("doRegister", "Register")
-                    ->addExtraClass("btn")
-                    ->addExtraClass("btn-green")
+                FormAction::create(
+                    'doRegister',
+                    _t('Users.REGISTER', 'Register')    
+                )->addExtraClass('btn')
             ),
             RequiredFields::create([
-                "FirstName",
-                "Surname",
-                "Email",
-                "Password"
+                'FirstName',
+                'Surname',
+                'Emai',
+                'Password'
             ])
-        )->addExtraClass("forms")
-        ->addExtraClass("forms-columnar");
+        )->addExtraClass('forms')
+        ->addExtraClass('forms-columnar');
 
-        $password_field->minLength = $config->get("password_min_length");
-        $password_field->maxLength = $config->get("password_max_length");
-        $password_field->requireStrongPassword = $config->get("password_require_strong");
+        $password_field->minLength = $config->get('password_min_length');
+        $password_field->maxLength = $config->get('password_max_length');
+        $password_field->requireStrongPassword = $config->get('password_require_strong');
 
-        $this->extend("updateRegisterForm", $form);
+        $this->extend('updateRegisterForm', $form);
 
         $session_data = $session->get("Form.{$form->FormName()}.data");
 
