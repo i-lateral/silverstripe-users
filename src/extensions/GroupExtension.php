@@ -27,17 +27,19 @@ class GroupExtension extends DataExtension
         );
 
         // Add default author group if no other group exists
-        foreach ($frontend_groups as $code) {
-            $group = Group::get()->find("Code", $code);
+        if (is_array($frontend_groups)) {
+            foreach ($frontend_groups as $code) {
+                $group = Group::get()->find("Code", $code);
 
-            if (empty($group)) {
-                $group = Group::create();
-                $group->Code = $code;
-                $group->Title = Users::convertCodeToName($code);
-                $group->write();
-                Permission::grant($group->ID, 'USERS_MANAGE_ACCOUNT');
+                if (empty($group)) {
+                    $group = Group::create();
+                    $group->Code = $code;
+                    $group->Title = Users::convertCodeToName($code);
+                    $group->write();
+                    Permission::grant($group->ID, 'USERS_MANAGE_ACCOUNT');
 
-                DB::alteration_message("Front end user group {$code} created", 'created');
+                    DB::alteration_message("Front end user group {$code} created", 'created');
+                }
             }
         }
 
@@ -46,18 +48,20 @@ class GroupExtension extends DataExtension
             'verification_groups'
         );
 
-        foreach ($verification_groups as $code) {
-            // Add default author group if no other group exists
-            $group = Group::get()->find("Code", $code);
+        if (is_array($verification_groups)) {
+            foreach ($verification_groups as $code) {
+                // Add default author group if no other group exists
+                $group = Group::get()->find("Code", $code);
 
-            if (empty($group)) {
-                $group = Group::create();
-                $group->Code = $code;
-                $group->Title = Users::convertCodeToName($code);
-                $group->write();
-                Permission::grant($group->ID, 'USERS_VERIFIED');
+                if (empty($group)) {
+                    $group = Group::create();
+                    $group->Code = $code;
+                    $group->Title = Users::convertCodeToName($code);
+                    $group->write();
+                    Permission::grant($group->ID, 'USERS_VERIFIED');
 
-                DB::alteration_message("Verified users group {$code} created", 'created');
+                    DB::alteration_message("Verified users group {$code} created", 'created');
+                }
             }
         }
     }

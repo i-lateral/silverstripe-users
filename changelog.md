@@ -66,3 +66,7 @@ Minor update to:
 # 2.2.1
 
 * Allow changing (or removing) of default user groups
+
+# 2.2.2
+
+* Minor fix for when default groups are not arrays
