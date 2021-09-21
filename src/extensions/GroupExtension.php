@@ -2,10 +2,12 @@
 
 namespace ilateral\SilverStripe\Users\Extensions;
 
-use SilverStripe\ORM\DataExtension;
-use SilverStripe\Security\Group;
-use SilverStripe\Security\Permission;
+use ilateral\SilverStripe\Users\Users;
 use SilverStripe\ORM\DB;
+use SilverStripe\Security\Group;
+use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Security\Permission;
 
 /**
  * Overwrite group object so we can setup some more default groups
@@ -19,33 +21,44 @@ class GroupExtension extends DataExtension
     {
         parent::requireDefaultRecords();
 
+        $frontend_groups = Config::inst()->get(
+            Users::class,
+            'new_user_groups'
+        );
+
         // Add default author group if no other group exists
-        $frontend_group = Group::get()->filter("Code", "users-frontend");
+        foreach ($frontend_groups as $code) {
+            $group = Group::get()->find("Code", $code);
 
-        if (!$frontend_group->exists()) {
-            $frontend_group = Group::create();
-            $frontend_group->Code = 'users-frontend';
-            $frontend_group->Title = "Frontend Users";
-            $frontend_group->Sort = 1;
-            $frontend_group->write();
-            Permission::grant($frontend_group->ID, 'USERS_MANAGE_ACCOUNT');
+            if (empty($group)) {
+                $group = Group::create();
+                $group->Code = $code;
+                $group->Title = Users::convertCodeToName($code);
+                $group->write();
+                Permission::grant($group->ID, 'USERS_MANAGE_ACCOUNT');
 
-            DB::alteration_message('Front end users group created', 'created');
+                DB::alteration_message("Front end user group {$code} created", 'created');
+            }
         }
 
-        // Add a verified users group (only used if we turn on
-        // verification)
-        $verify_group = Group::get()->filter("Code", "users-verified");
+        $verification_groups = Config::inst()->get(
+            Users::class,
+            'verification_groups'
+        );
 
-        if (!$verify_group->exists()) {
-            $verify_group = Group::create();
-            $verify_group->Code = 'users-verified';
-            $verify_group->Title = "Verified Users";
-            $verify_group->Sort = 1;
-            $verify_group->write();
-            Permission::grant($verify_group->ID, 'USERS_VERIFIED');
+        foreach ($verification_groups as $code) {
+            // Add default author group if no other group exists
+            $group = Group::get()->find("Code", $code);
 
-            DB::alteration_message('Verified users group created', 'created');
+            if (empty($group)) {
+                $group = Group::create();
+                $group->Code = $code;
+                $group->Title = Users::convertCodeToName($code);
+                $group->write();
+                Permission::grant($group->ID, 'USERS_VERIFIED');
+
+                DB::alteration_message("Verified users group {$code} created", 'created');
+            }
         }
     }
 }

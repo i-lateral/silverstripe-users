@@ -132,4 +132,20 @@ class Users
             unset(self::config()->verification_groups[$code]);
         }
     }
+
+    /**
+     * Convert a code for a security group to a name
+     *
+     * @param string $code
+     *
+     * @return string
+     */
+    public static function convertCodeToName(string $code): string
+    {
+        $name = str_replace('-', ' ', $code);
+        $name = str_replace('_', ' ', $name);
+        $name = ucwords($name);
+
+        return $name;
+    }
 }

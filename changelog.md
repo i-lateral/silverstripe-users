@@ -62,3 +62,7 @@ Minor update to:
 # 2.2.0
 
 * Update translations
+
+# 2.2.1
+
+* Allow changing (or removing) of default user groups
