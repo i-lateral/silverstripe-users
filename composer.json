@@ -20,7 +20,7 @@
         "issues": "http://github.com/i-lateral/silverstripe-users/issues"
     },
     "require": {
-        "silverstripe/framework": "~4.0"
+        "silverstripe/framework": "^5"
     },
     "autoload": {
         "psr-4": {

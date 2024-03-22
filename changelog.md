@@ -70,3 +70,7 @@ Minor update to:
 # 2.2.2
 
 * Minor fix for when default groups are not arrays
+
+# 3.0.0
+
+* SilverStripe 5 compatability
